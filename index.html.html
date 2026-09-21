@@ -1,0 +1,2709 @@
+<title>مختبر آفاق</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg: #F5F3FA;
+    --surface: #FFFFFF;
+    --surface-2: #F0EBFA;
+    --ink: #1A1530;
+    --ink-soft: #58506E;
+    --ink-faint: #8B84A0;
+    --line: #E4DEF2;
+    --line-strong: #CFC5E8;
+    --brand: #7C5CFC;
+    --brand-ink: #ffffff;
+    --amber: #E08900;
+    --amber-soft: #FCE7BF;
+    --good: #0ca30c;
+    --bad: #d03b3b;
+    --bench-1: #E7E3F5;
+    --bench-2: #CFC7E9;
+    --glass-stroke: #3D3552;
+    --glass-fill: rgba(255,255,255,.45);
+
+    --c-electro: #1E6FEA;
+    --c-thermo: #E4572E;
+    --c-kinetics: #049B90;
+    --c-acidbase: #D6457C;
+
+    --font-display: 'El Messiri', 'Segoe UI', Tahoma, sans-serif;
+    --font-body: 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+    --radius: 18px;
+    --shadow: 0 1px 2px rgba(30,20,60,.06), 0 10px 26px -14px rgba(30,20,60,.24);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg: #150F26; --surface: #1E1836; --surface-2: #271F45;
+      --ink: #F4F1FB; --ink-soft: #C2B9DE; --ink-faint: #8C82AC;
+      --line: #33285A; --line-strong: #45376E;
+      --brand: #A48CFF; --brand-ink: #17102C;
+      --amber: #F2B84D; --amber-soft: #3A2E12;
+      --bench-1: #241C3F; --bench-2: #1B1530;
+      --glass-stroke: #D9D2EC; --glass-fill: rgba(255,255,255,.10);
+      --c-electro:#5B93F2; --c-thermo:#F0805C; --c-kinetics:#2FBBAE; --c-acidbase:#E8749C;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg: #150F26; --surface: #1E1836; --surface-2: #271F45;
+    --ink: #F4F1FB; --ink-soft: #C2B9DE; --ink-faint: #8C82AC;
+    --line: #33285A; --line-strong: #45376E;
+    --brand: #A48CFF; --brand-ink: #17102C;
+    --amber: #F2B84D; --amber-soft: #3A2E12;
+    --bench-1: #241C3F; --bench-2: #1B1530;
+    --glass-stroke: #D9D2EC; --glass-fill: rgba(255,255,255,.10);
+    --c-electro:#5B93F2; --c-thermo:#F0805C; --c-kinetics:#2FBBAE; --c-acidbase:#E8749C;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html, body{ direction:rtl; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family: var(--font-body); }
+  #app{ padding-inline: max(14px, calc((100% - 1320px)/2)); padding-block: 14px 40px; }
+  h1,h2,h3,h4{ font-family:var(--font-display); text-wrap:balance; margin:0; }
+  p{ line-height:1.7; color:var(--ink-soft); margin:0; }
+  button{ font-family:inherit; }
+  [hidden]{ display:none !important; }
+  .num{ font-variant-numeric: tabular-nums; }
+  .vol-editable{ cursor:text; border-bottom:1px dashed var(--line-strong); }
+  .vol-editable:hover{ color:var(--brand); border-color:var(--brand); }
+  .vol-input{ width:56px; background:var(--surface-2); border:1px solid var(--brand); border-radius:6px; color:var(--ink); font-size:.83rem; font-weight:700; text-align:center; font-variant-numeric: tabular-nums; padding:1px 4px; }
+  ::selection{ background: var(--amber-soft); }
+
+  .topbar{
+    position:sticky; top:0; z-index:60; margin-inline:-14px; margin-block-start:-14px;
+    padding-inline: max(14px, calc((100% - 1320px)/2)); padding-block:10px;
+    background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(10px);
+    border-block-end:1px solid var(--line); display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  .brandmark{ display:flex; align-items:center; gap:9px; cursor:pointer; }
+  .brandmark .badge{ width:34px;height:34px;border-radius:11px; background:linear-gradient(135deg,var(--brand),var(--c-electro)); color:#fff; display:flex;align-items:center;justify-content:center; flex:none; }
+  .brandmark .badge svg{ width:19px;height:19px; }
+  .brandmark .txt{ display:flex; flex-direction:column; line-height:1.15; }
+  .brandmark .txt b{ font-family:var(--font-display); font-size:1rem; }
+  .brandmark .txt span{ font-size:.7rem; color:var(--ink-faint); }
+
+  nav.mainnav{ display:flex; gap:4px; margin-inline-start:8px; flex-wrap:wrap; }
+  nav.mainnav button{ border:1px solid transparent; background:transparent; color:var(--ink-soft); padding:8px 13px; border-radius:999px; font-size:.85rem; font-weight:700; cursor:pointer; display:flex; gap:6px; align-items:center; }
+  nav.mainnav button svg{ width:15px;height:15px; }
+  nav.mainnav button:hover{ background:var(--surface-2); color:var(--ink); }
+  nav.mainnav button.active{ background:var(--brand); color:var(--brand-ink); }
+
+  .course-switch{ position:relative; }
+  .course-switch .cbtn{ border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink); padding:7px 10px; border-radius:999px; font-size:.8rem; font-weight:800; cursor:pointer; display:flex; gap:5px; align-items:center; }
+  .course-switch .cbtn svg.chev{ width:12px;height:12px; color:var(--ink-faint); transition:transform .15s; }
+  .course-switch.open .cbtn svg.chev{ transform:rotate(180deg); }
+  .course-menu{ position:absolute; inset-inline-start:0; top:calc(100% + 6px); z-index:70; min-width:200px; background:var(--surface); border:1px solid var(--line-strong); border-radius:14px; box-shadow:var(--shadow); padding:6px; display:none; }
+  .course-switch.open .course-menu{ display:block; }
+  .course-menu button{ width:100%; text-align:start; border:none; background:transparent; padding:9px 10px; border-radius:9px; font-size:.82rem; font-weight:700; color:var(--ink); display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+  .course-menu button:not([disabled]):hover{ background:var(--surface-2); }
+  .course-menu button.active{ color:var(--brand); }
+  .course-menu button.active svg{ width:14px;height:14px; }
+  .course-menu button[disabled]{ cursor:not-allowed; color:var(--ink-faint); }
+  .course-menu .soon{ font-size:.66rem; background:var(--surface-2); color:var(--ink-faint); border-radius:999px; padding:2px 8px; font-weight:800; }
+
+  .topbar-actions{ display:flex; gap:6px; margin-inline-start:auto; flex-wrap:wrap; }
+  .tbtn{ border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft); padding:7px 12px; border-radius:999px; font-size:.8rem; cursor:pointer; display:flex; gap:6px; align-items:center; }
+  .tbtn svg{ width:14px;height:14px; }
+  .tbtn:hover{ background:var(--surface-2); color:var(--ink); }
+  .icon-btn{ border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft); width:34px;height:34px;border-radius:999px; display:flex;align-items:center;justify-content:center; cursor:pointer; flex:none; }
+  .icon-btn svg{ width:16px;height:16px; }
+
+  /* ---- home / hero : real lab scene as a full background ---- */
+  .hero{ position:relative; overflow:hidden; border-radius:26px; padding:34px 30px; margin-block:16px 22px;
+    background: linear-gradient(125deg, #052E2C 0%, #0B7A72 32%, #1E6FEA 66%, #049B90 100%);
+    isolation:isolate; box-shadow: 0 18px 40px -18px rgba(6,60,58,.55); cursor:pointer; }
+  .hero::after{ /* fine sterile dot texture — calm, static, no sweeping glare */
+    content:''; position:absolute; inset:0; z-index:1; pointer-events:none; opacity:.16;
+    background-image: radial-gradient(circle, rgba(255,255,255,.55) 1.4px, transparent 1.6px);
+    background-size:25px 25px; }
+  .hero::before{ /* scrim: keeps the text side legible while the lab scene shows through on the other side */
+    content:''; position:absolute; inset:0; z-index:2; pointer-events:none;
+    background: linear-gradient(to right, rgba(4,34,32,.1) 0%, rgba(4,34,32,.58) 55%, rgba(4,34,32,.9) 100%); }
+  .hero-lab-art{ position:absolute; inset:0; z-index:0; width:100%; height:100%; pointer-events:none;
+    transition: transform .3s ease-out; }
+  .hero-inner{ position:relative; z-index:3; max-width:70ch; }
+  .hero h1{ font-size:2rem; color:#fff; text-shadow:0 2px 14px rgba(4,40,38,.35); }
+  .hero p{ margin-block-start:8px; font-size:.95rem; color:rgba(255,255,255,.95); }
+  .hero p.tagline{ margin-block-start:2px; font-size:1.05rem; font-weight:800; color:#FFF3C4; text-shadow:0 1px 8px rgba(4,40,38,.3); }
+  .hero .stats{ display:flex; gap:22px; margin-block-start:18px; flex-wrap:wrap; }
+  .hero .stats .s{ color:#fff; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.28); border-radius:14px; padding:8px 14px; backdrop-filter:blur(4px); }
+  .hero .stats b{ font-family:var(--font-display); font-size:1.5rem; display:block; }
+  .hero .stats span{ font-size:.74rem; opacity:.9; }
+  .hero-actions{ display:flex; gap:10px; margin-block-start:18px; flex-wrap:wrap; }
+  .hero .btn.primary{ background:#fff; color:#0B8C82; font-weight:800; }
+
+  .filters{ display:flex; gap:8px; flex-wrap:wrap; margin-block-end:16px; }
+  .filter-chip{ border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft); padding:7px 14px; border-radius:999px; font-size:.8rem; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; }
+  .filter-chip .dot{ width:8px;height:8px;border-radius:999px; }
+  .filter-chip.active{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+
+  .egrid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .ecard{ border-radius:var(--radius); overflow:hidden; background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow); display:flex; flex-direction:column; transition:transform .15s ease, box-shadow .15s ease; }
+  .ecard:hover{ transform:translateY(-3px); box-shadow:0 6px 14px rgba(30,20,60,.1), 0 20px 34px -18px rgba(30,20,60,.32); }
+  .ecard .top{ height:6px; }
+  .ecard .body{ padding:18px; display:flex; flex-direction:column; gap:10px; flex:1; }
+  .ecard .head{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .ecard .icon{ width:42px;height:42px;border-radius:12px; display:flex;align-items:center;justify-content:center; flex:none; }
+  .ecard .icon svg{ width:23px;height:23px; }
+  .ecard .catlabel{ font-size:.68rem; font-weight:800; }
+  .ecard h3{ font-size:1.02rem; }
+  .ecard .q{ font-size:.83rem; background:var(--surface-2); border-radius:10px; padding:8px 10px; color:var(--ink); }
+  .ecard .foot{ margin-block-start:auto; display:flex; gap:8px; flex-wrap:wrap; }
+  .ecard .foot .btn{ flex:1; justify-content:center; font-size:.78rem; padding:8px 10px; }
+  .quiz-badge{ position:absolute; inset-inline-end:10px; inset-block-start:10px; width:24px;height:24px;border-radius:999px; background:var(--good); color:#fff; display:flex;align-items:center;justify-content:center; }
+  .quiz-badge svg{ width:13px;height:13px; }
+  .ecard{ position:relative; }
+
+  .btn{ border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); padding:8px 14px; border-radius:11px; font-size:.83rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+  .btn:hover{ background:var(--surface-2); }
+  .btn.danger{ color:var(--bad); }
+  .btn.primary{ background:var(--brand); color:var(--brand-ink); border-color:transparent; }
+  .btn svg{ width:14px;height:14px; }
+
+  /* ---- lab layout (sandbox) ---- */
+  .lab-layout{ display:grid; grid-template-columns: 230px 1fr 300px; gap:14px; margin-block-start:8px; align-items:start; }
+  .panel-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); }
+  .side-stack{ display:flex; flex-direction:column; gap:14px; }
+
+  /* ---- steps panel (beside bench) ---- */
+  .steps-card{ padding:14px; }
+  .steps-card-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-block-end:8px; }
+  .steps-card-head h4{ font-size:.88rem; }
+  .steps-count{ font-size:.72rem; font-weight:800; padding:3px 9px; border-radius:999px; background:var(--surface-2); color:var(--ink-soft); flex:none; }
+  .steps-progress{ height:7px; border-radius:999px; background:var(--surface-2); overflow:hidden; margin-block-end:10px; }
+  .steps-progress-fill{ height:100%; border-radius:999px; background:var(--brand); width:0%; transition:width .35s ease; }
+  .steps-panel-list{ display:flex; flex-direction:column; gap:7px; max-height:52vh; overflow:auto; }
+  .step-row{ display:flex; gap:9px; align-items:flex-start; padding:8px 9px; border-radius:10px; background:var(--surface-2); cursor:pointer; transition:background .15s; }
+  .step-row:hover{ background:color-mix(in srgb, var(--brand) 10%, var(--surface-2)); }
+  .step-row .tick{ width:20px;height:20px;border-radius:999px; border:2px solid var(--line-strong); flex:none; display:flex; align-items:center; justify-content:center; margin-block-start:1px; transition:background .15s,border-color .15s; }
+  .step-row .tick svg{ width:11px;height:11px; opacity:0; color:#fff; }
+  .step-row.done .tick{ background:var(--good); border-color:var(--good); }
+  .step-row.done .tick svg{ opacity:1; }
+  .step-row.done span{ color:var(--ink-faint); text-decoration:line-through; }
+  .step-row span{ font-size:.79rem; line-height:1.55; color:var(--ink); }
+
+  .side-tabs{ display:flex; gap:4px; padding:8px; border-block-end:1px solid var(--line); flex-wrap:wrap; }
+  .side-tabs button{ border:none; background:transparent; color:var(--ink-soft); padding:6px 9px; border-radius:9px; font-size:.74rem; font-weight:700; cursor:pointer; }
+  .side-tabs button.active{ background:var(--surface-2); color:var(--ink); }
+  .tray{ padding:10px; display:flex; flex-direction:column; gap:6px; max-height:64vh; overflow:auto; }
+  .tray-item{ display:flex; align-items:center; gap:10px; padding:8px 9px; border-radius:11px; border:1px solid transparent; cursor:grab; touch-action:none; user-select:none; background:var(--surface); }
+  .tray-item:hover{ background:var(--surface-2); border-color:var(--line); }
+  .tray-item.dragging{ opacity:.35; }
+  .tray-item .swatch{ width:30px;height:36px; flex:none; display:flex; align-items:center; justify-content:center; }
+  .tray-item .swatch svg{ width:100%; height:100%; }
+  .tray-item .meta{ min-width:0; flex:1; }
+  .tray-item .meta b{ display:block; font-size:.8rem; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tray-item .meta span{ font-size:.68rem; color:var(--ink-faint); }
+  .tray-item .info-dot{ width:19px;height:19px; border-radius:999px; border:1px solid var(--line-strong); color:var(--ink-faint); display:flex; align-items:center; justify-content:center; font-size:.65rem; font-weight:800; flex:none; cursor:pointer; background:var(--surface); }
+  .tray-item .info-dot:hover{ color:var(--brand); border-color:var(--brand); }
+
+  .tools-strip{ display:flex; gap:6px; padding:8px 10px; border-block-start:1px solid var(--line); }
+  .tool-chip{ flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:8px 3px; border-radius:11px; border:1px solid var(--line); background:var(--surface-2); cursor:grab; touch-action:none; user-select:none; }
+  .tool-chip svg{ width:19px;height:19px; color:var(--ink-soft); }
+  .tool-chip span{ font-size:.62rem; color:var(--ink-soft); font-weight:700; }
+  .tool-chip.lit{ background:color-mix(in srgb, var(--amber) 24%, var(--surface-2)); border-color:var(--amber); }
+  .tool-chip.lit svg{ color:var(--amber); }
+  .tool-chip.iced{ background:color-mix(in srgb, var(--c-electro) 20%, var(--surface-2)); border-color:var(--c-electro); }
+  .tool-chip.iced svg{ color:var(--c-electro); }
+
+  .bench-wrap{ display:flex; flex-direction:column; gap:12px; }
+  .context-banner{ position:relative; overflow:hidden; display:flex; align-items:center; gap:14px; padding:16px 18px; border-radius:18px;
+    background: linear-gradient(120deg, var(--cb-color), color-mix(in srgb, var(--cb-color) 55%, #140E28 45%));
+    border:1px solid color-mix(in srgb, var(--cb-color) 55%, var(--line-strong));
+    box-shadow: 0 10px 26px -14px color-mix(in srgb, var(--cb-color) 55%, transparent); }
+  .context-banner .cb-decor{ position:absolute; inset:0; opacity:.16; pointer-events:none;
+    background-image: radial-gradient(circle, #fff 1.6px, transparent 1.7px); background-size:20px 20px; }
+  .context-banner .cb-icon{ position:relative; width:48px;height:48px;border-radius:15px; background:rgba(255,255,255,.22); backdrop-filter:blur(4px); color:#fff; display:flex;align-items:center;justify-content:center; flex:none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), 0 4px 10px rgba(0,0,0,.12); }
+  .context-banner .cb-icon svg{ width:25px;height:25px; }
+  .context-banner .cb-text{ position:relative; flex:1; min-width:0; }
+  .context-banner .cb-eyebrow{ display:block; font-size:.68rem; font-weight:800; letter-spacing:.02em; color:rgba(255,255,255,.88); margin-block-end:3px; }
+  .context-banner .cb-text b{ display:block; font-size:1.02rem; color:#fff; }
+  .context-banner .cb-q{ font-size:.79rem; color:rgba(255,255,255,.9); line-height:1.5; }
+  .context-banner .cb-close{ position:relative; border:none; background:rgba(255,255,255,.2); color:#fff; cursor:pointer; width:28px;height:28px; border-radius:999px; display:flex; align-items:center; justify-content:center; flex:none; transition:background .15s; }
+  .context-banner .cb-close:hover{ background:rgba(255,255,255,.35); }
+  .context-banner .cb-close svg{ width:13px;height:13px; }
+  @media (max-width:600px){ .context-banner{ padding:13px 14px; } .context-banner .cb-icon{ width:40px;height:40px; } .context-banner .cb-q{ display:none; } }
+
+  .bench{ position:relative; min-height:440px; border-radius:var(--radius); overflow:hidden;
+    background: linear-gradient(180deg, var(--bench-1) 0%, var(--bench-1) 78%, var(--bench-2) 78%, var(--bench-2) 100%);
+    border:1px solid var(--line); box-shadow:var(--shadow); }
+  .bench::before{ content:""; position:absolute; inset:0 0 22% 0; opacity:.15; background: repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 90px); pointer-events:none; }
+  .bench .hint{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; color: color-mix(in srgb, var(--ink) 45%, transparent); font-size:.9rem; font-weight:700; pointer-events:none; padding:20px; }
+  .bench.drag-over{ outline:3px dashed var(--brand); outline-offset:-3px; }
+  .vessel{ position:absolute; width:112px; transform:translate(-56px,-100px); display:flex; flex-direction:column; align-items:center; cursor:grab; touch-action:none; user-select:none; }
+  .vessel.selected .glasswrap{ filter: drop-shadow(0 0 0 2px var(--brand)); }
+  .vessel .glasswrap{ position:relative; width:100px; height:92px; }
+  .vessel svg.vgraphic{ width:100%; height:100%; overflow:visible; }
+  .vessel .label{ margin-block-start:2px; font-size:.68rem; font-weight:700; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:2px 8px; white-space:nowrap; max-width:120px; overflow:hidden; text-overflow:ellipsis; }
+  .vessel .vol-badge{ margin-block-start:3px; font-size:.66rem; font-weight:800; color:var(--brand); background:var(--surface); border:1px dashed var(--line-strong); border-radius:999px; padding:2px 9px; white-space:nowrap; }
+  .vessel .vol-badge:hover{ border-color:var(--brand); background:var(--surface-2); }
+  .vessel .vol-badge .vol-input{ width:60px; font-size:.7rem; padding:0 3px; }
+  .vessel .badges{ position:absolute; top:-8px; inset-inline-end:-6px; display:flex; flex-direction:column; gap:3px; align-items:flex-end; }
+  .vessel .badge{ font-size:.62rem; font-weight:800; padding:2px 6px; border-radius:999px; background:var(--surface); border:1px solid var(--line-strong); color:var(--ink-soft); white-space:nowrap; }
+  .vessel .badge.temp-hot{ color:#fff; background:#d9542f; border-color:transparent; }
+  .vessel .badge.temp-cold{ color:#fff; background:#2f7dd9; border-color:transparent; }
+  .mol-cloud-btn{ position:absolute; top:-44px; inset-inline-start:-26px; z-index:6; width:38px; height:28px; border:none; padding:0; cursor:pointer;
+    background: radial-gradient(circle at 30% 32%, #ffffff, #E9F2FF 55%, #cfe6ff 100%); border-radius:50%;
+    box-shadow:0 3px 10px rgba(30,111,234,.4); display:flex; align-items:center; justify-content:center;
+    animation: cloudBob 3.2s ease-in-out infinite, cloudPulse 2.4s ease-in-out infinite; }
+  .mol-cloud-btn::before, .mol-cloud-btn::after{ content:''; position:absolute; background:inherit; border-radius:50%; }
+  .mol-cloud-btn::before{ width:18px; height:18px; top:-8px; inset-inline-start:1px; }
+  .mol-cloud-btn::after{ width:14px; height:14px; top:-5px; inset-inline-end:1px; }
+  .mol-cloud-btn span{ position:relative; font-size:15px; line-height:1; z-index:1; }
+  .mol-cloud-btn.active{ background: radial-gradient(circle at 30% 32%, #ffffff, #EDE3FF 55%, #cbb1ff 100%); animation: cloudBob 3.2s ease-in-out infinite; }
+  @keyframes cloudBob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-5px);} }
+  @keyframes cloudPulse{ 0%,100%{ box-shadow:0 3px 10px rgba(30,111,234,.4), 0 0 0 0 rgba(124,92,252,.5);} 50%{ box-shadow:0 3px 10px rgba(30,111,234,.4), 0 0 0 8px rgba(124,92,252,0);} }
+  .vessel .flame{ position:absolute; bottom:-14px; left:50%; --flame-scale:1; transform:translateX(-50%) scale(var(--flame-scale)); width:26px; height:26px; opacity:0; transition:opacity .2s, transform .25s; color:var(--amber); pointer-events:none; }
+  .vessel.heated .flame{ opacity:1; }
+  .vessel .ice-ind{ position:absolute; bottom:-14px; left:50%; --ice-scale:1; transform:translateX(-50%) scale(var(--ice-scale)); width:22px; height:22px; opacity:0; transition:opacity .2s, transform .25s; color:var(--c-electro); pointer-events:none; }
+  .vessel.iced .ice-ind{ opacity:1; }
+
+  /* ---- on-bench heat/cool intensity sliders (drag up/down beside the vessel) ---- */
+  .heat-slider, .ice-slider{ position:absolute; top:10px; width:20px; height:72px; display:none; z-index:4; }
+  .vessel.heated .heat-slider{ display:block; inset-inline-end:-28px; }
+  .vessel.iced .ice-slider{ display:block; inset-inline-start:-28px; }
+  .slider-track{ position:relative; width:8px; height:100%; margin:0 auto; border-radius:999px; background:color-mix(in srgb, var(--surface-2) 90%, transparent); border:1px solid var(--line-strong); cursor:ns-resize; touch-action:none; box-shadow:inset 0 1px 2px rgba(0,0,0,.15); }
+  .slider-fill{ position:absolute; bottom:0; left:0; width:100%; border-radius:999px; background:var(--amber); height:50%; }
+  .ice-slider .slider-fill{ background:var(--c-electro); }
+  .slider-thumb{ position:absolute; left:50%; bottom:50%; width:16px;height:16px; border-radius:999px; background:var(--surface); border:2px solid var(--amber); transform:translate(-50%,50%); box-shadow:0 2px 5px rgba(0,0,0,.3); cursor:ns-resize; }
+  .ice-slider .slider-thumb{ border-color:var(--c-electro); }
+  .slider-cap{ position:absolute; top:-15px; left:50%; transform:translateX(-50%); font-size:.6rem; font-weight:800; color:var(--ink-faint); white-space:nowrap; }
+  .vessel.intense .glasswrap{ animation: intensePulse 1.1s ease-in-out infinite; }
+  @keyframes intensePulse{ 0%,100%{ filter:drop-shadow(0 0 0 rgba(217,84,47,0)); } 50%{ filter:drop-shadow(0 0 7px color-mix(in srgb, var(--bad) 55%, transparent)); } }
+  .vessel .stir-ind{ position:absolute; top:20px; left:50%; transform:translateX(-50%); width:15px;height:15px; opacity:0; color:var(--ink-soft); transition:opacity .2s; pointer-events:none; z-index:3; }
+  .vessel.stirred .stir-ind{ opacity:.85; animation: stirSpin .9s linear infinite; }
+  @keyframes stirSpin{ from{ transform:translateX(-50%) rotate(0deg); } to{ transform:translateX(-50%) rotate(360deg); } }
+
+  /* ---- reaction alert (redesigned note box) ---- */
+  .reaction-alert{ margin-block-start:10px; padding:11px 12px; border-radius:12px; background:var(--amber-soft); border:1px solid color-mix(in srgb, var(--amber) 45%, var(--line)); animation:alertIn .35s ease; }
+  @keyframes alertIn{ 0%{ opacity:0; transform:translateY(-4px) scale(.98); } 100%{ opacity:1; transform:translateY(0) scale(1); } }
+  .reaction-alert .ra-head{ display:flex; align-items:center; gap:8px; margin-block-end:6px; flex-wrap:wrap; }
+  .reaction-alert .ra-icon{ width:24px;height:24px;border-radius:999px; background:var(--amber); color:#fff; display:flex; align-items:center; justify-content:center; flex:none; }
+  .reaction-alert .ra-icon svg{ width:13px;height:13px; }
+  .reaction-alert .ra-label{ font-size:.78rem; font-weight:800; color:var(--ink); flex:1; }
+  .reaction-alert .ra-chip{ font-size:.66rem; font-weight:800; padding:2px 8px; border-radius:999px; flex:none; }
+  .reaction-alert .ra-chip.i1{ background:color-mix(in srgb, var(--good) 20%, transparent); color:var(--good); }
+  .reaction-alert .ra-chip.i2{ background:color-mix(in srgb, var(--amber) 25%, transparent); color:var(--amber); }
+  .reaction-alert .ra-chip.i3{ background:color-mix(in srgb, var(--bad) 20%, transparent); color:var(--bad); }
+  .reaction-alert p{ font-size:.83rem; color:var(--ink); line-height:1.6; margin:0; }
+  .reaction-alert .ra-caption{ display:block; font-size:.68rem; font-weight:800; color:var(--amber); margin-block:8px 4px; }
+  .reaction-alert .ra-caption:first-of-type{ margin-block-start:2px; }
+  .eq-line{ margin-block-start:9px; padding:8px 10px; border-radius:9px; background:var(--surface); border:1px dashed color-mix(in srgb, var(--amber) 50%, var(--line-strong)); font-family:'Courier New',monospace; font-size:.84rem; font-weight:700; text-align:center; color:var(--ink); direction:ltr; unicode-bidi:isolate; }
+
+  /* ---- heat/cool level selector ---- */
+  .level-select{ margin-block-start:10px; }
+  .level-select .lbl{ font-size:.72rem; color:var(--ink-faint); margin-block-end:5px; display:block; }
+  .level-select .lvl-row{ display:flex; gap:6px; }
+  .level-select button{ flex:1; border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink-soft); border-radius:9px; padding:7px 4px; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; font-size:.68rem; font-weight:700; }
+  .level-select button svg{ width:15px;height:15px; }
+  .level-select button.active{ background:var(--brand); color:var(--brand-ink); border-color:transparent; }
+  .level-select button.active svg{ color:var(--brand-ink) !important; }
+
+  /* ---- speed control ---- */
+  .speed-btn{ position:absolute; top:10px; inset-inline-start:10px; z-index:5; border:1px solid var(--line-strong); background:color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter:blur(6px); color:var(--ink); border-radius:999px; padding:6px 12px; font-size:.76rem; font-weight:800; display:flex; align-items:center; gap:6px; cursor:pointer; }
+  .speed-btn svg{ width:13px;height:13px; }
+  .speed-btn.x2, .speed-btn.x4{ color:var(--brand); border-color:var(--brand); }
+  .speed-btn:disabled{ opacity:.4; cursor:not-allowed; }
+  .history-btns{ position:absolute; top:10px; inset-inline-end:10px; z-index:5; display:flex; gap:8px; }
+  .history-btns .speed-btn{ position:static; top:auto; inset-inline-end:auto; }
+  .bubble{ position:absolute; bottom:14px; border-radius:999px; background:rgba(255,255,255,.75); opacity:0; }
+  .vessel.bubbling .bubble{ animation: rise 1.6s ease-in infinite; }
+  @keyframes rise{ 0%{ transform:translateY(0) scale(.6); opacity:0; } 15%{opacity:.9;} 100%{ transform:translateY(-55px) scale(1); opacity:0; } }
+
+  /* ---- boiling steam & frost effects ---- */
+  .vessel .steam{ position:absolute; top:-4px; inset-inline-start:0; width:100px; height:40px; pointer-events:none; z-index:2; }
+  .vessel .steam .wisp{ position:absolute; bottom:0; width:11px; height:11px; border-radius:999px; background:rgba(255,255,255,.7); filter:blur(2.5px); opacity:0; }
+  .vessel.steaming .steam .wisp{ animation: steamRise 2s ease-out infinite; }
+  .vessel.boiling .steam .wisp{ background:rgba(255,255,255,.85); }
+  @keyframes steamRise{ 0%{ transform:translateY(0) scale(.5); opacity:0; } 20%{ opacity:.85; } 100%{ transform:translateY(-34px) scale(1.5); opacity:0; } }
+  .frost{ position:absolute; inset:0; border-radius:8px; background:linear-gradient(180deg, rgba(180,220,255,.4), rgba(180,220,255,.08)); opacity:0; transition:opacity .4s ease; pointer-events:none; }
+  .vessel.frosty .frost{ opacity:1; }
+  .warmth-hint{ position:absolute; inset:0; border-radius:8px; pointer-events:none; transition:opacity .6s ease; }
+  .vessel.vividly-hot .glasswrap{ filter: drop-shadow(0 0 9px rgba(255,90,46,.55)); }
+  .vessel.vividly-cold .glasswrap{ filter: drop-shadow(0 0 9px rgba(46,156,255,.55)); }
+  .precipitate{ opacity:0; transition:opacity .8s ease; }
+  .precipitate.show{ opacity:1; }
+  .liquid-fill{ transition: height .6s ease, y .6s ease, fill .8s ease, opacity .6s ease; }
+  .remove-x{ position:absolute; top:-8px; inset-inline-start:-8px; width:20px;height:20px;border-radius:999px; background:var(--surface); border:1px solid var(--line-strong); color:var(--ink-faint); display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0; transition:opacity .15s; }
+  .vessel:hover .remove-x, .vessel.selected .remove-x{ opacity:1; }
+  .remove-x svg{ width:10px;height:10px; }
+  .ghost{ position:fixed; pointer-events:none; z-index:200; opacity:.92; transform:translate(-50%,-50%) scale(1.05); filter:drop-shadow(0 6px 14px rgba(0,0,0,.25)); }
+
+  /* ---- digital balance station (real bench instrument) ---- */
+  .balance-station{ position:absolute; width:112px; transform:translate(-56px,-100%); display:flex; flex-direction:column; align-items:center; cursor:grab; touch-action:none; user-select:none; z-index:2; }
+  .balance-station .platform{ width:96px; min-height:56px; border-radius:10px 10px 6px 6px; background:linear-gradient(180deg, var(--surface-2), var(--surface)); border:2px solid var(--line-strong); box-shadow:0 6px 14px rgba(0,0,0,.16), inset 0 2px 3px rgba(255,255,255,.4); position:relative; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; align-content:center; gap:3px; padding:8px; }
+  .balance-station .platform::after{ content:""; position:absolute; inset-inline:10%; bottom:-6px; height:6px; border-radius:0 0 6px 6px; background:var(--ink-faint); opacity:.35; }
+  .balance-station .pan-item{ width:13px;height:13px;border-radius:4px; border:1px solid rgba(0,0,0,.15); flex:none; }
+  .balance-station .readout{ margin-block-start:9px; background:#101418; color:#7CFFB2; font-family:'Courier New',monospace; font-weight:700; font-size:.8rem; padding:4px 12px; border-radius:6px; letter-spacing:.5px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); cursor:text; }
+  .balance-station .readout:hover{ box-shadow: inset 0 0 0 1px rgba(124,255,178,.6); }
+  .balance-station .weight-input{ width:56px; background:transparent; border:none; color:#7CFFB2; font-family:'Courier New',monospace; font-weight:700; font-size:.8rem; text-align:center; outline:none; padding:0; }
+  .balance-station .bal-label{ font-size:.66rem; font-weight:700; color:var(--ink-faint); margin-block-start:3px; white-space:nowrap; }
+  .balance-station .remove-x{ inset-inline-start:auto; inset-inline-end:-8px; opacity:0; }
+  .balance-station .tare-btn{ position:absolute; top:-8px; inset-inline-start:-8px; width:20px;height:20px; border-radius:999px; background:var(--surface); border:1px solid var(--line-strong); color:var(--ink-faint); display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0; transition:opacity .15s; }
+  .balance-station .tare-btn svg{ width:10px;height:10px; }
+  .balance-station:hover .remove-x, .balance-station:hover .tare-btn{ opacity:1; }
+  .balance-station .platform{ cursor:grab; }
+  .balance-station .platform.dragging{ opacity:.35; }
+
+  .bottom-row{ display:grid; grid-template-columns:1fr; gap:14px; }
+  .detail-card{ padding:16px; }
+  .detail-card h4{ font-size:.95rem; margin-block-end:10px; }
+  .detail-empty{ font-size:.85rem; color:var(--ink-faint); text-align:center; padding:18px 4px; }
+  .detail-rows{ display:flex; flex-direction:column; gap:8px; }
+  .detail-rows .r{ display:flex; justify-content:space-between; font-size:.85rem; gap:10px; }
+  .detail-rows .r span:first-child{ color:var(--ink-faint); }
+  .content-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-block-start:4px; }
+  .chip{ font-size:.72rem; font-weight:700; padding:3px 9px; border-radius:999px; background:var(--surface-2); color:var(--ink-soft); display:inline-flex; align-items:center; gap:4px; }
+  .struct-view{ background:var(--surface-2); border-radius:14px; padding:16px 10px; margin-block-start:4px; }
+  .struct-legend{ display:flex; gap:16px; justify-content:center; margin-block-start:10px; flex-wrap:wrap; }
+  .struct-legend span{ display:flex; align-items:center; gap:6px; font-size:.8rem; font-weight:700; color:var(--ink); }
+  .struct-legend i{ width:12px;height:12px;border-radius:999px; display:inline-block; flex:none; }
+  /* ---- animated pseudo-3D molecule stage (billboarded balls + bead bonds, rotating in real 3D) ---- */
+  .mol3d-stage{ position:relative; height:170px; perspective:560px; overflow:visible; }
+  .mol3d-scene{ position:absolute; inset:0; transform-style:preserve-3d; animation: mol3dSpin 12s linear infinite; }
+  @keyframes mol3dSpin{ from{ transform: rotateX(-16deg) rotateY(0deg); } to{ transform: rotateX(-16deg) rotateY(360deg); } }
+  .mol3d-pos{ position:absolute; width:0; height:0; transform-style:preserve-3d; transform: translateZ(var(--mz,0px)); }
+  .mol3d-counter{ position:relative; transform-style:preserve-3d; animation: mol3dCounterSpin 12s linear infinite; }
+  @keyframes mol3dCounterSpin{ from{ transform: rotateY(0deg) rotateX(16deg); } to{ transform: rotateY(-360deg) rotateX(16deg); } }
+  .mol3d-ball{ position:absolute; top:0; inset-inline-start:0; transform:translate(-50%,-50%); border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-weight:800; color:#fff; box-shadow:0 3px 7px rgba(0,0,0,.35); }
+  .mol3d-bead{ box-shadow:none; }
+  /* ---- toggleable "cloud" panel showing the molecule stage, anchored to the vessel's cloud button ---- */
+  .mol-cloud-panel{ position:fixed; z-index:150; width:230px; background: linear-gradient(160deg, #ffffff, #EEF3FF 70%); border-radius:26px;
+    padding:14px 14px 12px; box-shadow:0 16px 38px -12px rgba(20,20,60,.4), 0 0 0 1px rgba(124,92,252,.15); animation: cloudPanelIn .22s ease; }
+  @keyframes cloudPanelIn{ from{ opacity:0; transform:translateY(8px) scale(.94); } to{ opacity:1; transform:translateY(0) scale(1); } }
+  .mol-cloud-panel .mcp-close{ position:absolute; top:8px; inset-inline-end:8px; width:22px;height:22px; border-radius:50%; border:none; background:var(--surface-2); color:var(--ink-soft); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .mol-cloud-panel .mcp-close svg{ width:11px; height:11px; }
+  .mcp-tabs{ display:flex; flex-wrap:wrap; gap:4px; margin-block-end:8px; padding-inline-end:26px; }
+  .mcp-tabs button{ font-size:.66rem; font-weight:700; padding:3px 9px; border-radius:999px; border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft); cursor:pointer; font-family:inherit; }
+  .mcp-tabs button.active{ background:var(--brand); color:#fff; border-color:var(--brand); }
+  .mcp-title{ text-align:center; margin-block-end:2px; }
+  .mcp-title b{ display:block; font-size:.86rem; color:var(--ink); }
+  .mcp-title span{ font-size:.72rem; color:var(--brand); font-weight:700; }
+  .mcp-label{ text-align:center; font-size:.74rem; font-weight:700; margin-block-start:4px; color:var(--ink); }
+  .note-box{ margin-block-start:10px; padding:10px 12px; border-radius:10px; background:var(--amber-soft); border:1px dashed color-mix(in srgb, var(--amber) 45%, var(--line)); font-size:.83rem; color:var(--ink); }
+  .science-box{ margin-block-start:16px; padding:14px 16px; border-radius:14px; background:color-mix(in srgb, var(--brand) 10%, var(--surface)); border:1px solid color-mix(in srgb, var(--brand) 30%, var(--line)); }
+  .science-box .sb-head{ display:flex; align-items:center; gap:8px; margin-block-end:8px; font-weight:800; font-size:.9rem; color:var(--brand); }
+  .science-box .sb-head svg{ width:17px;height:17px; }
+  .science-box p{ font-size:.86rem; color:var(--ink); line-height:1.7; margin:0; }
+  .detail-actions{ display:flex; gap:8px; margin-block-start:12px; }
+  .log-list{ display:flex; flex-direction:column; gap:8px; max-height:220px; overflow:auto; }
+  .log-item{ font-size:.8rem; color:var(--ink-soft); display:flex; gap:8px; }
+  .log-item .dot{ width:6px;height:6px;border-radius:999px; background:var(--brand); margin-block-start:6px; flex:none; }
+  .log-item b{ color:var(--ink); }
+  .log-empty{ font-size:.82rem; color:var(--ink-faint); text-align:center; padding:14px; }
+
+  /* ---- quiz hub ---- */
+  .quiz-hero{ display:flex; align-items:center; gap:18px; padding:18px; margin-block-end:16px; flex-wrap:wrap; }
+  .ring{ position:relative; width:96px; height:96px; flex:none; }
+  .ring svg{ width:100%; height:100%; transform:rotate(-90deg); }
+  .ring .bg{ fill:none; stroke:var(--surface-2); stroke-width:9; }
+  .ring .fg{ fill:none; stroke:var(--brand); stroke-width:9; stroke-linecap:round; transition:stroke-dasharray .5s ease; }
+  .ring .center{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .ring .center b{ font-family:var(--font-display); font-size:1.3rem; }
+  .ring .center span{ font-size:.6rem; color:var(--ink-faint); }
+
+  .qa-item{ border:1px solid var(--line); border-radius:16px; margin-block-end:12px; overflow:hidden; background:var(--surface); }
+  .qa-head{ display:flex; align-items:center; gap:12px; padding:14px 16px; cursor:pointer; }
+  .qa-head .icon{ width:36px;height:36px;border-radius:10px; display:flex;align-items:center;justify-content:center; flex:none; }
+  .qa-head .icon svg{ width:19px;height:19px; }
+  .qa-head .t{ flex:1; min-width:0; }
+  .qa-head .t b{ display:block; font-size:.9rem; }
+  .qa-head .t span{ font-size:.74rem; color:var(--ink-faint); }
+  .qa-head .score{ font-size:.72rem; font-weight:800; padding:3px 9px; border-radius:999px; background:var(--surface-2); color:var(--ink-soft); flex:none; }
+  .qa-head .chev{ transition:transform .2s; color:var(--ink-faint); flex:none; }
+  .qa-item.open .qa-head .chev{ transform:rotate(180deg); }
+  .qa-body{ padding:0 16px 16px; display:none; }
+  .qa-item.open .qa-body{ display:block; }
+  .qcard{ padding:14px; background:var(--surface-2); border-radius:12px; margin-block-end:10px; }
+  .qcard .qtext{ font-weight:700; color:var(--ink); margin-block-end:10px; font-size:.86rem; }
+  .opts{ display:flex; flex-direction:column; gap:7px; }
+  .opt{ text-align:start; padding:9px 12px; border-radius:9px; border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); font-size:.83rem; cursor:pointer; display:flex; align-items:center; gap:9px; }
+  .opt:hover{ background:var(--surface-2); }
+  .opt .dot2{ width:16px;height:16px;border-radius:999px; border:2px solid var(--line-strong); flex:none; }
+  .opt.correct{ border-color:var(--good); background:color-mix(in srgb, var(--good) 12%, var(--surface)); }
+  .opt.correct .dot2{ background:var(--good); border-color:var(--good); }
+  .opt.wrong{ border-color:var(--bad); background:color-mix(in srgb, var(--bad) 12%, var(--surface)); }
+  .opt.wrong .dot2{ background:var(--bad); border-color:var(--bad); }
+  .opt[disabled]{ cursor:default; }
+  .explain{ margin-block-start:8px; font-size:.78rem; padding:8px 10px; border-radius:8px; background:var(--surface); color:var(--ink-soft); }
+
+  /* popover / modal */
+  .popover{ position:fixed; z-index:150; max-width:240px; background:var(--surface); border:1px solid var(--line-strong); border-radius:12px; box-shadow:var(--shadow); padding:12px 14px; font-size:.8rem; }
+  .popover b{ display:block; font-size:.85rem; margin-block-end:3px; }
+  .popover .f{ color:var(--brand); font-weight:700; font-size:.76rem; margin-block-end:6px; display:block; }
+  .popover p{ font-size:.78rem; }
+  .modal-backdrop{ position:fixed; inset:0; background:rgba(15,10,30,.55); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .modal{ background:var(--surface); border-radius:18px; max-width:640px; width:100%; max-height:85vh; overflow:auto; padding:24px; box-shadow:var(--shadow); position:relative; }
+  .fb-email-row{ display:flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--line-strong); border-radius:11px; padding:9px 12px; margin-block-end:12px; font-weight:700; }
+  .fb-email-row svg{ width:16px;height:16px; color:var(--brand); flex-shrink:0; }
+  .fb-email-row span{ flex:1; direction:ltr; text-align:right; font-size:.85rem; }
+  .fb-email-row .btn{ padding:6px 10px; font-size:.76rem; }
+  .fb-textarea{ width:100%; resize:vertical; min-height:100px; border:1px solid var(--line-strong); border-radius:11px; padding:10px 12px; font:inherit; color:var(--ink); background:var(--surface); }
+  .fb-actions{ display:flex; justify-content:flex-end; margin-block-start:12px; }
+  .fb-note{ margin-block-start:8px; font-size:.76rem; color:var(--ink-soft); }
+  .modal h3{ font-size:1.25rem; margin-block-end:12px; }
+  .safety-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-block-start:10px; }
+  .safety{ display:flex; gap:10px; padding:12px; border-radius:12px; background:var(--amber-soft); border:1px solid color-mix(in srgb, var(--amber) 45%, var(--line)); }
+  .safety svg{ width:19px;height:19px; flex:none; color:var(--amber); margin-block-start:2px; }
+  .safety b{ display:block; margin-block-end:2px; font-size:.85rem; }
+  .safety p{ font-size:.8rem; }
+  .modal-close{ position:absolute; top:14px; inset-inline-end:14px; }
+
+  .steps-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+  .steps-list li{ display:flex; gap:12px; align-items:flex-start; padding:11px 12px; border-radius:12px; background:var(--surface-2); border:1px solid var(--line); }
+  .steps-list li b{ width:24px;height:24px;border-radius:999px; background:var(--brand); color:var(--brand-ink); display:flex; align-items:center; justify-content:center; font-size:.76rem; flex:none; }
+  .steps-list li span{ font-size:.87rem; color:var(--ink); line-height:1.6; padding-block-start:2px; }
+  .cb-steps-btn{ border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft); border-radius:999px; padding:5px 11px; font-size:.74rem; font-weight:700; display:flex; align-items:center; gap:5px; cursor:pointer; flex:none; }
+  .cb-steps-btn svg{ width:13px;height:13px; }
+  .cb-steps-btn:hover{ background:var(--surface-2); color:var(--ink); }
+
+  footer.note{ margin-block-start:30px; padding-block-start:16px; border-block-start:1px solid var(--line); font-size:.76rem; color:var(--ink-faint); text-align:center; }
+
+  @media (max-width:980px){
+    .lab-layout{ grid-template-columns:1fr; }
+    .egrid{ grid-template-columns:repeat(2,1fr); }
+    .tray{ max-height:220px; }
+    .bottom-row{ grid-template-columns:1fr; }
+  }
+  @media (max-width:600px){
+    .egrid{ grid-template-columns:1fr; }
+    .safety-grid{ grid-template-columns:1fr; }
+    .bench{ min-height:380px; }
+    .hero{ padding:22px 18px; }
+    .hero-lab-art{ display:none; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="ic-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v5.2L4.8 18.4A2 2 0 0 0 6.6 21h10.8a2 2 0 0 0 1.8-2.6L14 8.2V3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-thermo" viewBox="0 0 24 24"><path d="M13 14.76V5a2 2 0 1 0-4 0v9.76a4 4 0 1 0 4 0Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M11 7v7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="11" cy="17" r="2.2" fill="currentColor"/></symbol>
+    <symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 3 5 5.5V11c0 5 3 8.3 7 10 4-1.7 7-5 7-10V5.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12.2l2.1 2.1L15.3 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15.5H6.5A2.5 2.5 0 0 0 4 21V5.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><path d="M4.5 12.5 9.5 17.5 19.5 6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-flame" viewBox="0 0 24 24"><path d="M12 21c4 0 6.5-2.6 6.5-6.2 0-2.7-1.6-4.4-2.6-6-1 1.3-1.7 2-2.7 1.2.6-2.3-.2-4.4-2-6-1.2 2.5-3.4 4-4.3 6.3C6 12 5.6 13.3 5.6 14.8 5.6 18.4 8 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-snow" viewBox="0 0 24 24"><path d="M12 2v20M4.2 6.5l15.6 9M4.2 15.5l15.6-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+    <symbol id="ic-moon" viewBox="0 0 24 24"><path d="M20 14.2A8.5 8.5 0 1 1 9.8 4a7 7 0 0 0 10.2 10.2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="ic-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 11v5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="8" r="1.1" fill="currentColor"/></symbol>
+    <symbol id="ic-refresh" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.6-5.7M20 12a8 8 0 0 1-13.6 5.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M14.4 3.6 17.8 6l-3.9 1.3M9.6 20.4 6.2 18l3.9-1.3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-beaker" viewBox="0 0 24 24"><path d="M8 3h8M8.5 3v6L4.8 17.4A2 2 0 0 0 6.6 20h10.8a2 2 0 0 0 1.8-2.6L15.5 9V3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6.5 14h11" stroke="currentColor" stroke-width="1.3" opacity=".5"/></symbol>
+    <symbol id="ic-tube" viewBox="0 0 24 24"><path d="M9 3h6M9.5 3v13a2.5 2.5 0 0 0 5 0V3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.5 12.5h5" stroke="currentColor" stroke-width="1.3" opacity=".5"/></symbol>
+    <symbol id="ic-cylinder" viewBox="0 0 24 24"><path d="M9 2h6M9.5 2v16.5a2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5V2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.5 7.5h5M9.5 11.5h5M9.5 15.5h5" stroke="currentColor" stroke-width="1.1" opacity=".55"/></symbol>
+    <symbol id="ic-jar" viewBox="0 0 24 24"><path d="M7 8h10v10.5a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 7 18.5V8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 8V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-bolt" viewBox="0 0 24 24"><path d="M12.5 2 4 14h6l-1.5 8L20 10h-6l-1.5-8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-cycle" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.6-5.7M20 12a8 8 0 0 1-13.6 5.7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M14.4 3.6 17.8 6l-3.9 1.3M9.6 20.4 6.2 18l3.9-1.3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-drop" viewBox="0 0 24 24"><path d="M12 3s6 7.1 6 11.2A6 6 0 1 1 6 14.2C6 10.1 12 3 12 3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-back" viewBox="0 0 24 24"><path d="M14.5 5 8 12l6.5 7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-forward" viewBox="0 0 24 24"><path d="M9.5 5 16 12l-6.5 7" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-stir" viewBox="0 0 24 24"><path d="M15.5 3 9 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M6 19c0-1.7 1.5-2.5 3.1-2 1.5.5 1.9 2 3.2 2 1.2 0 1.9-.9 1.9-.9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="ic-trophy" viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 14v3M9 20.5h6M9.5 20.5c0-1.8.7-2.7 2.5-2.7s2.5.9 2.5 2.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="ic-fe" viewBox="0 0 24 24"><rect x="10.5" y="3" width="3" height="16" rx="1.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 19h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="ic-quiz" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9.3 9.3a2.7 2.7 0 1 1 3.9 2.4c-.9.5-1.2.9-1.2 1.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/><circle cx="12" cy="16.7" r="1" fill="currentColor"/></symbol>
+    <symbol id="ic-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-balance" viewBox="0 0 24 24"><path d="M12 3v18M6 20h12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M12 5 5 8l3.5 6.5L12 12 5 8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 5l7 3-3.5 6.5L12 12l7-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="8.5" cy="14.5" r="1" fill="currentColor"/><circle cx="15.5" cy="14.5" r="1" fill="currentColor"/></symbol>
+    <symbol id="ic-bubbles" viewBox="0 0 24 24"><circle cx="9" cy="14" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="16" cy="9" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="15.5" cy="18" r="1.6" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+    <symbol id="ic-precip" viewBox="0 0 24 24"><path d="M6 4h12M7 4v6l-3 9a1.4 1.4 0 0 0 1.3 2h13.4a1.4 1.4 0 0 0 1.3-2l-3-9V4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="9.5" cy="18" r="1" fill="currentColor"/><circle cx="12.5" cy="19.3" r="1" fill="currentColor"/><circle cx="15" cy="17.8" r="1" fill="currentColor"/></symbol>
+    <symbol id="ic-speed" viewBox="0 0 24 24"><path d="M5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="ic-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4.5 7 12 13l7.5-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<div id="app" dir="rtl" lang="ar">
+  <div class="topbar">
+    <button class="icon-btn" id="backBtn" title="العودة للصفحة السابقة" hidden><svg><use href="#ic-forward"/></svg></button>
+    <div class="brandmark" data-nav="home">
+      <div class="badge"><svg><use href="#ic-flask"/></svg></div>
+      <div class="txt"><b>مختبر آفاق</b><span>جرّب واكتشف وتعلّم بأمان</span></div>
+    </div>
+    <div class="course-switch" id="courseSwitch">
+      <button class="cbtn" id="courseBtn" type="button" aria-haspopup="true" aria-expanded="false">
+        كيمياء 3
+        <svg class="chev"><use href="#ic-chev"/></svg>
+      </button>
+      <div class="course-menu" role="menu" aria-label="اختيار المقرر">
+        <button type="button" disabled role="menuitemradio" aria-checked="false"><span>كيمياء 1</span><span class="soon">قريباً</span></button>
+        <button type="button" disabled role="menuitemradio" aria-checked="false"><span>كيمياء 2</span><span class="soon">قريباً</span></button>
+        <button type="button" class="active" role="menuitemradio" aria-checked="true"><span>كيمياء 3</span><svg><use href="#ic-check"/></svg></button>
+      </div>
+    </div>
+    <nav class="mainnav">
+      <button data-nav="home" class="active"><svg><use href="#ic-book"/></svg>التجارب</button>
+      <button data-nav="sandbox"><svg><use href="#ic-flask"/></svg>المختبر الحر</button>
+      <button data-nav="quiz"><svg><use href="#ic-quiz"/></svg>أسئلة تفاعلية</button>
+    </nav>
+    <div class="topbar-actions">
+      <button class="tbtn" id="openGuide"><svg><use href="#ic-info"/></svg>دليل المواد</button>
+      <button class="tbtn" id="openSafety"><svg><use href="#ic-shield"/></svg>دليل السلامة</button>
+      <button class="tbtn" id="openFeedback"><svg><use href="#ic-mail"/></svg>آراؤكِ ومشاكل تقنية</button>
+      <button class="icon-btn" id="themeToggle" title="تبديل المظهر"><svg><use href="#ic-moon"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ============ HOME: experiments gallery ============ -->
+  <section id="view-home">
+    <div class="hero">
+      <svg class="hero-lab-art" id="heroLabArt" viewBox="0 0 900 220" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <line x1="10" y1="206" x2="890" y2="206" stroke="#fff" stroke-opacity=".28" stroke-width="2" stroke-linecap="round"/>
+        <!-- microscope -->
+        <g stroke="#EAF6FF" stroke-opacity=".6" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M76 206 h48"/>
+          <path d="M100 206 V182 Q100 172 110 172 h14"/>
+          <path d="M124 172 Q136 172 136 160 V104"/>
+          <path d="M136 104 L152 88"/>
+          <rect x="88" y="160" width="26" height="11" rx="2" fill="#EAF6FF" fill-opacity=".16" stroke-opacity=".4"/>
+          <circle cx="136" cy="98" r="8" fill="#EAF6FF" fill-opacity=".2" stroke-opacity=".5"/>
+        </g>
+        <!-- petri dishes -->
+        <g stroke="#EAF6FF" stroke-opacity=".5" stroke-width="1.6" fill="#EAF6FF" fill-opacity=".14">
+          <ellipse cx="205" cy="200" rx="30" ry="7"/>
+          <ellipse cx="205" cy="193" rx="30" ry="7"/>
+          <ellipse cx="252" cy="203" rx="20" ry="5"/>
+        </g>
+        <!-- erlenmeyer flask, blue liquid + rising bubbles -->
+        <g stroke="#EAF6FF" stroke-opacity=".6" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M352 118 L352 90 L336 90"/>
+          <path d="M346 90 L346 128 L326 190 Q321 202 334 202 L390 202 Q403 202 398 190 L378 128 L378 90"/>
+        </g>
+        <path d="M348 138 L380 138 L396 190 Q399 198 391 198 L333 198 Q325 198 328 190 Z" fill="#2E9CFF" fill-opacity=".58"/>
+        <circle cx="356" cy="178" r="3.4" fill="#8FE3FF" fill-opacity=".85"><animate attributeName="cy" values="190;146;190" dur="2.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;.85;0" dur="2.6s" repeatCount="indefinite"/></circle>
+        <circle cx="372" cy="182" r="2.6" fill="#8FE3FF" fill-opacity=".75"><animate attributeName="cy" values="196;150;196" dur="2.1s" begin=".4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;.75;0" dur="2.1s" begin=".4s" repeatCount="indefinite"/></circle>
+        <!-- round beaker, teal liquid -->
+        <path d="M430 130 L430 190 Q430 202 442 202 L462 202 Q474 202 474 190 L474 130" stroke="#EAF6FF" stroke-opacity=".6" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M432 158 L472 158 L472 190 Q472 198 462 198 L442 198 Q432 198 432 190 Z" fill="#049B90" fill-opacity=".62"/>
+        <rect x="418" y="202" width="66" height="9" rx="3" fill="#EAF6FF" fill-opacity=".24"/>
+      </svg>
+      <div class="hero-inner">
+        <h1>أهلاً بكِ في مختبر آفاق</h1>
+        <p class="tagline">جرّب واكتشف وتعلّم بأمان</p>
+        <p>معملكِ الرقمي حيث تتحول المعادلات إلى ألوان، والفضول إلى اكتشاف.</p>
+        <div class="stats">
+          <div class="s"><b id="statCount" class="num">0</b><span>تجربة متاحة</span></div>
+          <div class="s"><b id="statDone" class="num">0</b><span>أسئلة مكتملة</span></div>
+          <div class="s"><b id="statChem" class="num">0</b><span>مادة كيميائية على الرفّ</span></div>
+          <div class="s" title="عدّاد تقريبي على جهازكِ أنتِ فقط، وليس مجموع تفاعلات كل الطالبات"><b id="statReactions" class="num">0</b><span>تفاعل نفّذتِه هنا</span></div>
+        </div>
+        <div class="hero-actions">
+          <button class="btn primary" data-nav="sandbox">افتحي المختبر الحر<svg><use href="#ic-flask"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="filters" id="filters"></div>
+    <div class="egrid" id="egrid"></div>
+
+    <footer class="note">مختبر آفاق — جرّب واكتشف وتعلّم بأمان — منصة تعليمية مساندة لمقرر كيمياء 3، مبنية على تجارب المقرر الرسمية، ولا تغني عن تعليمات المعلمة والسلامة داخل المختبر الحقيقي<br><span style="display:inline-block;margin-block-start:6px;font-weight:800;color:var(--ink-soft)">إعداد وتصميم: الأستاذة أمل سفر الشمراني — معلمة كيمياء</span></footer>
+  </section>
+
+  <!-- ============ SANDBOX ============ -->
+  <section id="view-sandbox" hidden>
+    <div id="contextBanner" hidden></div>
+    <div class="lab-layout">
+      <div class="side-stack">
+        <div class="panel-card steps-card" id="stepsPanel" hidden>
+          <div class="steps-card-head"><h4>خطوات التجربة</h4><span class="steps-count" id="stepsCount">0/0</span></div>
+          <div class="steps-progress"><div class="steps-progress-fill" id="stepsProgFill"></div></div>
+          <div class="steps-panel-list" id="stepsPanelList"></div>
+        </div>
+      </div>
+
+      <div class="bench-wrap">
+        <div class="bench" id="bench">
+          <button class="speed-btn" id="speedBtn" title="تسريع وقت التفاعل"><svg><use href="#ic-speed"/></svg><span id="speedLabel">١×</span></button>
+          <div class="history-btns">
+            <button class="speed-btn" id="undoBtn" title="تراجع عن آخر إجراء"><svg><use href="#ic-back"/></svg><span>تراجع</span></button>
+            <button class="speed-btn" id="redoBtn" title="تقدّم للأمام"><svg><use href="#ic-forward"/></svg><span>تقدّم</span></button>
+          </div>
+          <div class="hint" id="benchHint">المنضدة فارغة — اسحبي إناءً من قائمة الأدوات الزجاجية لوضعه هنا</div>
+        </div>
+        <div class="bottom-row">
+          <div class="panel-card detail-card">
+            <h4>تفاصيل الإناء المحدد</h4>
+            <div id="detailBody"><div class="detail-empty">اضغطي على أي إناء موجود على المنضدة لعرض تفاصيله هنا</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="side-tabs" id="matTabs">
+          <button type="button" class="active" data-mat-tab="glass">الأدوات الزجاجية</button>
+          <button type="button" data-mat-tab="tools">الأدوات</button>
+        </div>
+        <div class="tray" id="equipTray"></div>
+        <div class="tools-strip" id="toolsStrip" hidden></div>
+        <div class="tray" id="chemTray" style="max-height:52vh" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ HUB ============ -->
+  <section id="view-quiz" hidden>
+    <div class="panel-card quiz-hero">
+      <div class="ring">
+        <svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="43"/><circle class="fg" id="quizRingFg" cx="50" cy="50" r="43" stroke-dasharray="0 1000"/></svg>
+        <div class="center"><b id="quizRingLabel" class="num">0/0</b><span>مكتملة</span></div>
+      </div>
+      <div>
+        <h2 style="font-size:1.3rem">أسئلة تفاعلية على كل تجربة</h2>
+        <p style="margin-block-start:6px">أجيبي عن سؤالين إلى ثلاثة أسئلة لكل تجربة لتثبيت الفكرة العلمية، وتُحفظ نتيجتك تلقائياً.</p>
+      </div>
+    </div>
+    <div id="quizList"></div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var svgNS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, parent){ var e=document.createElementNS(svgNS,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+  function clamp01(v){ return Math.max(0, Math.min(1, v)); }
+  function mixHex(h1, h2, t){
+    function p(h){ h=h.replace('#',''); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; }
+    var a=p(h1), b=p(h2);
+    var r=Math.round(a[0]+(b[0]-a[0])*t), g=Math.round(a[1]+(b[1]-a[1])*t), bl=Math.round(a[2]+(b[2]-a[2])*t);
+    return 'rgb('+r+','+g+','+bl+')';
+  }
+
+  /* ================= theme ================= */
+  var themeBtn = document.getElementById('themeToggle');
+  function currentTheme(){ var t=document.documentElement.getAttribute('data-theme'); if(t) return t; return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'; }
+  function paintThemeIcon(){ themeBtn.innerHTML = '<svg><use href="'+(currentTheme()==='dark'?'#ic-sun':'#ic-moon')+'"/></svg>'; }
+  themeBtn.addEventListener('click', function(){
+    var next = currentTheme()==='dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem('lab-theme', next); }catch(e){}
+    paintThemeIcon();
+  });
+  try{ var st=localStorage.getItem('lab-theme'); if(st) document.documentElement.setAttribute('data-theme', st); }catch(e){}
+  paintThemeIcon();
+
+  /* ================= category meta ================= */
+  var CATS = {
+    mixtures:    {label:'المخاليط والمحاليل',   color:'var(--c-electro)', icon:'#ic-beaker'},
+    acidbase:    {label:'الأحماض والقواعد',      color:'var(--c-acidbase)', icon:'#ic-drop'},
+    redox:       {label:'الأكسدة والاختزال',      color:'var(--c-kinetics)', icon:'#ic-cycle'},
+    electrochem: {label:'الكيمياء الكهربائية',    color:'var(--c-thermo)', icon:'#ic-bolt'}
+  };
+
+  /* ================= equipment ================= */
+  var EQUIPMENT = [
+    {id:'beaker', name:'كأس زجاجي 100 مل', max:100, shape:'beaker', icon:'#ic-beaker'},
+    {id:'tube', name:'أنبوب اختبار 25 مل', max:25, shape:'tube', icon:'#ic-tube'},
+    {id:'flask', name:'دورق مخروطي 150 مل', max:150, shape:'flask', icon:'#ic-flask'},
+    {id:'cylinder', name:'مخبار مدرج 50 مل', max:50, shape:'cylinder', icon:'#ic-cylinder'}
+  ];
+  var EQ_BY_ID = {}; EQUIPMENT.forEach(function(e){EQ_BY_ID[e.id]=e;});
+
+  /* ================= chemicals ================= */
+  var CHEM_TABS = [
+    {id:'acid_base', label:'أحماض وقواعد'},
+    {id:'metal', label:'فلزّات'},
+    {id:'salt', label:'أملاح ومحاليل'},
+    {id:'household', label:'مواد منزلية'},
+    {id:'special', label:'مواد خاصة'}
+  ];
+  var CHEMICALS = [
+    {id:'water', name:'ماء مقطر', formula:'H₂O', phase:'liquid', color:'#EAF3F5', cat:'special', desc:'مذيب محايد نستخدمه لتخفيف المحاليل وإذابة الأملاح.'},
+    {id:'hcl_d', name:'حمض الهيدروكلوريك المخفف', formula:'HCl، 0.10M', phase:'liquid', color:'#F3F8F6', acid:1, cat:'acid_base', desc:'حمض قوي مخفف، مهيّج — يُستخدم في المعايرة وإذابة الرخام وتفاعلات الفلزّات.'},
+    {id:'hcl_c', name:'حمض الهيدروكلوريك المركّز', formula:'HCl، 12M', phase:'liquid', color:'#F3F8F6', concentrated:true, acid:2, cat:'acid_base', desc:'حمض مركّز أكّال — يُستخدم بحذر شديد في التفاعلات القوية.'},
+    {id:'naoh', name:'هيدروكسيد الصوديوم', formula:'NaOH، 0.10M', phase:'liquid', color:'#F3F8F6', base:1, cat:'acid_base', desc:'قاعدة قوية مخففة، تُستخدم في معايرة الأحماض.'},
+    {id:'phenol', name:'دليل الفينولفثالين', formula:'مؤشر حمض-قاعدة', phase:'liquid', color:'#F6F3F8', isIndicator:'phenol', cat:'acid_base', desc:'عديم اللون في الوسط الحمضي، ويتحول للوردي في الوسط القاعدي (pH>8.2) — يُستخدم في معايرة القاعدة.'},
+    {id:'universal', name:'دليل الملفوف الأحمر / الدليل العام', formula:'مؤشر شامل', phase:'liquid', color:'#EDE7C8', isIndicator:'universal', cat:'acid_base', desc:'مستخلص طبيعي من الملفوف الأحمر يعطي طيفاً لونياً من الأحمر (حمضي جداً) إلى البنفسجي (قاعدي جداً).'},
+
+    {id:'zn', name:'شريط الزنك', formula:'Zn (صلب)', phase:'solid', jar:true, cat:'metal', color:'#9AA5AC', reactivity:3, mass:1, desc:'فلزّ متوسط-عالي النشاط يزيح النحاس من محاليل أملاحه.'},
+    {id:'fe', name:'مسمار حديد', formula:'Fe (صلب)', phase:'solid', jar:true, cat:'metal', color:'#8a8f93', reactivity:2, mass:5, desc:'فلزّ متوسط النشاط يصدأ بالتعرض للرطوبة والأكسجين، ويُستخدم في تجارب الإزاحة الفلزية.'},
+    {id:'mg', name:'شريط مغنيسيوم', formula:'Mg (صلب)', phase:'solid', jar:true, cat:'metal', color:'#c7ccce', reactivity:4, mass:0.5, desc:'من أنشط الفلزات هنا — يتفاعل بقوة وسرعة مع الأحماض.'},
+    {id:'pb', name:'شريحة رصاص', formula:'Pb (صلب)', phase:'solid', jar:true, cat:'metal', color:'#5b5f66', reactivity:1, mass:6, desc:'فلزّ منخفض النشاط، يتفاعل ببطء شديد جداً مع الأحماض المخففة.'},
+    {id:'al_foil', name:'رقائق ألومنيوم', formula:'Al (صلب)', phase:'solid', jar:true, cat:'metal', color:'#cfd6d8', reactivity:3, mass:0.3, desc:'نشط كهروكيميائياً رغم طبقة الأكسيد الواقية — يُستخدم لاسترجاع الفضة وتنظيف تشويهها.'},
+    {id:'ag_tarnished', name:'قطعة فضة مغشّاة', formula:'طبقة Ag₂S على Ag', phase:'solid', jar:true, cat:'metal', color:'#3a3a3a', mass:2, desc:'طبقة كبريتيد الفضة السوداء التي تكسو الفضة — يمكن اختزالها كهروكيميائياً لإعادة اللمعان.'},
+    {id:'cu', name:'قطعة نحاس', formula:'Cu (صلب)', phase:'solid', jar:true, cat:'metal', color:'#B5652E', reactivity:0.5, mass:2, desc:'فلزّ منخفض النشاط — لا يتفاعل مع الأحماض المخففة، لكنه أنشط من الفضة فيختزل أيوناتها من محاليلها.'},
+
+    {id:'cacl2', name:'كلوريد الكالسيوم', formula:'CaCl₂ (صلب)', phase:'solid', jar:true, dissolveHeat:8, cat:'salt', mass:10, desc:'ملح يذوب في الماء بتفاعل طارد للحرارة — ترتفع درجة الحرارة.'},
+    {id:'nh4cl', name:'كلوريد الأمونيوم', formula:'NH₄Cl (صلب)', phase:'solid', jar:true, dissolveHeat:-8, cat:'salt', mass:10, desc:'ملح يذوب في الماء بتفاعل ماصّ للحرارة — تنخفض درجة الحرارة.'},
+    {id:'cuso4', name:'محلول كبريتات النحاس', formula:'CuSO₄', phase:'liquid', color:'#3E7FD9', cat:'salt', desc:'محلول أزرق يتفاعل مع الفلزّات الأنشط من النحاس في تفاعل إزاحة أحادية.'},
+    {id:'cuso4_solid', name:'بلورات كبريتات النحاس', formula:'CuSO₄ (صلب)', phase:'solid', jar:true, dissolveHeat:0, cat:'salt', color:'#3E7FD9', mass:5, desc:'بلورات زرقاء تذوب في الماء؛ تتأثر سرعة ذوبانها بدرجة الحرارة والتحريك ومساحة السطح.'},
+    {id:'znso4', name:'محلول كبريتات الخارصين', formula:'ZnSO₄', phase:'liquid', color:'#F3F8F6', cat:'salt', desc:'محلول عديم اللون تقريباً يتفاعل مع الفلزّات الأنشط من الخارصين في تفاعل إزاحة أحادية.'},
+    {id:'agno3', name:'محلول نترات الفضة', formula:'AgNO₃', phase:'liquid', color:'#F3F8F6', cat:'salt', desc:'يتفاعل مع الفلزّات الأنشط من الفضة، ويكوّن راسباً أبيض مع أيون الكلوريد.'},
+    {id:'nacl', name:'محلول كلوريد الصوديوم', formula:'NaCl (محلول جاهز)', phase:'liquid', color:'#F3F8F6', cat:'salt', desc:'ماء مالح جاهز (تم إذابة الملح فيه مسبقاً) — يُستخدم في اختبارات الترسيب وتجارب التآكل.'},
+    {id:'nacl_solid', name:'ملح الطعام (خام)', formula:'NaCl (صلب)', phase:'solid', jar:true, cat:'salt', color:'#F2F0EA', mass:5, desc:'بلورات ملح خام قبل إذابتها — أضيفيها مباشرةً إلى الماء أو الثلج، كما في التجربة الحقيقية، لملاحظة خفض درجة التجمد.'},
+    {id:'na2s2o3', name:'محلول ثيوسلفات الصوديوم', formula:'Na₂S₂O₃', phase:'liquid', color:'#F3F8F6', cat:'salt', desc:'يتفاعل مع الحمض منتجاً عكارة من الكبريت الأصفر — تجربة كلاسيكية لقياس سرعة التفاعل.'},
+
+    {id:'vinegar', name:'خل (حمض الإيثانويك)', formula:'CH₃COOH، حمض ضعيف', phase:'liquid', color:'#F5F2E4', acid:0.5, cat:'household', desc:'حمض عضوي ضعيف يتأين جزئياً فقط في الماء، بخلاف الأحماض القوية.'},
+    {id:'lemon', name:'عصير ليمون', formula:'حمض الستريك، حمض ضعيف', phase:'liquid', color:'#F5F2C8', acid:0.5, cat:'household', desc:'محلول حمضي طبيعي ضعيف، يمكن استخدامه كإلكتروليت في بطارية بسيطة.'},
+    {id:'soap', name:'محلول صابون', formula:'قاعدة ضعيفة', phase:'liquid', color:'#EEF5F0', base:0.5, cat:'household', desc:'محلول منزلي قاعدي خفيف شائع في اختبارات الأحماض والقواعد.'},
+    {id:'baking_soda', name:'محلول صودا الخبز', formula:'NaHCO₃، قاعدة ضعيفة', phase:'liquid', color:'#F3F8F6', base:0.5, cat:'household', desc:'قاعدة منزلية ضعيفة، ومحلولها الساخن مع الألومنيوم يُستخدم لتنظيف تشويه الفضة.'},
+
+    {id:'h2o2', name:'بيروكسيد الهيدروجين', formula:'H₂O₂', phase:'liquid', color:'#F0F7F6', cat:'special', desc:'يتحلل بسرعة إلى ماء وأكسجين بوجود عامل حفّاز مناسب.'},
+    {id:'mno2', name:'أكسيد المنغنيز (حفّاز)', formula:'MnO₂ (صلب)', phase:'solid', jar:true, color:'#3b3b3b', cat:'special', mass:0.5, desc:'عامل حفّاز يسرّع تحلل بيروكسيد الهيدروجين دون أن يُستهلك.'},
+    {id:'marble', name:'قطع رخام', formula:'CaCO₃ (صلب)', phase:'solid', jar:true, color:'#E7E2D6', cat:'special', mass:3, desc:'كربونات الكالسيوم الصلبة — تتفاعل مع الأحماض منتجةً غاز CO₂.'},
+    {id:'cocl2', name:'محلول كلوريد الكوبالت (استكشاف حر)', formula:'[Co(H₂O)₆]²⁺', phase:'liquid', color:'#E893B8', cat:'special', desc:'محلول وردي يتحول إلى أزرق بالتسخين أو بإضافة حمض مركّز — للاستكشاف الحر في المختبر خارج تجارب المقرر.'}
+  ];
+  var CHEM_BY_ID = {}; CHEMICALS.forEach(function(c){CHEM_BY_ID[c.id]=c;});
+
+  /* ================= simplified real-world particle structures (for the "شكل الجزيئات" viewer) ================= */
+  var STRUCTURES = {
+    water:   {type:'covalent', label:'جزيء تساهمي بسيط (شكل منحنٍ بزاوية ~104.5°)', atoms:[
+      {el:'O', color:'#E24B3C', x:80, y:48, z:20, r:17, textColor:'#fff'},
+      {el:'H', color:'#F4F1FB', x:44, y:88, z:-14, r:11},
+      {el:'H', color:'#F4F1FB', x:116, y:88, z:-14, r:11}
+    ], bonds:[[0,1],[0,2]]},
+    h2o2:    {type:'covalent', label:'جزيء تساهمي (سلسلة H–O–O–H منحنية الشكل)', atoms:[
+      {el:'H', color:'#F4F1FB', x:14, y:76, z:22, r:9},
+      {el:'O', color:'#E24B3C', x:52, y:48, z:6, r:14, textColor:'#fff'},
+      {el:'O', color:'#E24B3C', x:108, y:48, z:-6, r:14, textColor:'#fff'},
+      {el:'H', color:'#F4F1FB', x:146, y:76, z:-22, r:9}
+    ], bonds:[[0,1],[1,2],[2,3]]},
+    hcl_d:   {type:'covalent', label:'جزيء تساهمي قطبي ثنائي الذرة', atoms:[
+      {el:'H', color:'#F4F1FB', x:44, y:65, z:0, r:11},
+      {el:'Cl', color:'#8FCB6B', x:114, y:65, z:0, r:18, textColor:'#fff'}
+    ], bonds:[[0,1]]},
+    hcl_c:   {type:'covalent', label:'جزيء تساهمي قطبي ثنائي الذرة (مركّز)', atoms:[
+      {el:'H', color:'#F4F1FB', x:44, y:65, z:0, r:11},
+      {el:'Cl', color:'#8FCB6B', x:114, y:65, z:0, r:18, textColor:'#fff'}
+    ], bonds:[[0,1]]},
+    naoh:       {type:'hydrated', label:'أيونات مُماهة منفصلة تسبح في المحلول (الإماهة)', ion:{label:'Na⁺', color:'#7C5CFC'}, counter:{label:'OH⁻', color:'#E4572E'}},
+    zn:         {type:'metallic', label:'بلورة فلزّية عملاقة — ذرات متماثلة يحيط بها بحر إلكترونات متحرك', color:'#9AA5AC'},
+    fe:         {type:'metallic', label:'بلورة فلزّية عملاقة ثلاثية الأبعاد', color:'#8a8f93'},
+    mg:         {type:'metallic', label:'بلورة فلزّية عملاقة ثلاثية الأبعاد', color:'#c7ccce'},
+    pb:         {type:'metallic', label:'بلورة فلزّية عملاقة ثلاثية الأبعاد', color:'#5b5f66'},
+    al_foil:    {type:'metallic', label:'بلورة فلزّية عملاقة ثلاثية الأبعاد', color:'#cfd6d8'},
+    cu:         {type:'metallic', label:'بلورة فلزّية عملاقة ثلاثية الأبعاد', color:'#B5652E'},
+    ag_tarnished:{type:'metallic', label:'بلورة فضة فلزّية نقية تحت طبقة التشويه', color:'#D8D8D8'},
+    cacl2:      {type:'ionicLattice', label:'بلورة أيونية عملاقة — شبكة ثلاثية الأبعاد متبادلة الشحنات', cation:{label:'Ca²⁺', color:'#4C7FE0'}, anion:{label:'Cl⁻', color:'#8FCB6B'}},
+    nh4cl:      {type:'ionicLattice', label:'بلورة أيونية عملاقة — شبكة ثلاثية الأبعاد متبادلة الشحنات', cation:{label:'NH₄⁺', color:'#E4572E'}, anion:{label:'Cl⁻', color:'#8FCB6B'}},
+    nacl_solid: {type:'ionicLattice', label:'بلورة أيونية عملاقة (مكعبة الشكل الحقيقي)', cation:{label:'Na⁺', color:'#7C5CFC'}, anion:{label:'Cl⁻', color:'#8FCB6B'}},
+    cuso4_solid:{type:'ionicLattice', label:'بلورة أيونية عملاقة — شبكة ثلاثية الأبعاد متبادلة الشحنات', cation:{label:'Cu²⁺', color:'#3E7FD9'}, anion:{label:'SO₄²⁻', color:'#F0913A'}},
+    marble:     {type:'ionicLattice', label:'بلورة أيونية عملاقة — شبكة ثلاثية الأبعاد متبادلة الشحنات', cation:{label:'Ca²⁺', color:'#4C7FE0'}, anion:{label:'CO₃²⁻', color:'#E7E2D6'}},
+    mno2:       {type:'ionicLattice', label:'شبكة أكسيد فلزّي عملاقة ثلاثية الأبعاد', cation:{label:'Mn⁴⁺', color:'#6A4FD9'}, anion:{label:'O²⁻', color:'#E24B3C'}},
+    cuso4:      {type:'hydrated', label:'أيونات مُماهة منفصلة تسبح في المحلول (الإماهة)', ion:{label:'Cu²⁺', color:'#3E7FD9'}, counter:{label:'SO₄²⁻', color:'#F0913A'}},
+    znso4:      {type:'hydrated', label:'أيونات مُماهة منفصلة تسبح في المحلول (الإماهة)', ion:{label:'Zn²⁺', color:'#9AA5AC'}, counter:{label:'SO₄²⁻', color:'#F0913A'}},
+    agno3:      {type:'hydrated', label:'أيونات مُماهة منفصلة تسبح في المحلول (الإماهة)', ion:{label:'Ag⁺', color:'#C9CDCF'}, counter:{label:'NO₃⁻', color:'#2F8FD9'}},
+    nacl:       {type:'hydrated', label:'أيونات مُماهة منفصلة تسبح في المحلول (الإماهة)', ion:{label:'Na⁺', color:'#7C5CFC'}, counter:{label:'Cl⁻', color:'#8FCB6B'}},
+    na2s2o3:    {type:'hydrated', label:'أيونات مُماهة منفصلة تسبح في المحلول (الإماهة)', ion:{label:'Na⁺', color:'#7C5CFC'}, counter:{label:'S₂O₃²⁻', color:'#D9B44A'}},
+    baking_soda:{type:'hydrated', label:'أيونات مُماهة منفصلة تسبح في المحلول (الإماهة)', ion:{label:'Na⁺', color:'#7C5CFC'}, counter:{label:'HCO₃⁻', color:'#3FA55A'}},
+    vinegar:    {type:'organic', label:'جزيء عضوي بسيط (حمض ضعيف)', organicShape:'chain', chainLen:2, hasO:true, formulaNote:'CH₃COOH — سلسلة كربونية قصيرة تنتهي بمجموعة كربوكسيل COOH، لا تتأين إلا جزئياً في الماء.'},
+    lemon:      {type:'organic', label:'جزيء عضوي (حمض الستريك)', organicShape:'chain', chainLen:3, hasO:true, formulaNote:'C₆H₈O₇ — جزيء أكبر يحمل ثلاث مجموعات كربوكسيل، حمض عضوي ضعيف طبيعي.'},
+    soap:       {type:'organic', label:'جزيء عضوي طويل (سطحي الفعل)', organicShape:'chain', chainLen:9, hasO:true, formulaNote:'سلسلة هيدروكربونية طويلة كارهة للماء، مع رأس أيوني محب للماء في أحد طرفيها.'},
+    phenol:     {type:'organic', label:'جزيء عضوي مؤشر (حلقة عطرية)', organicShape:'ring', formulaNote:'يفقد أيون هيدروجين في الوسط القاعدي فيتغيّر توزيع الإلكترونات في الجزيء ويظهر اللون الوردي.'},
+    universal:  {type:'organic', label:'مزيج أصباغ نباتية عضوية', organicShape:'chain', chainLen:4, hasO:true, formulaNote:'أصباغ الأنثوسيانين الطبيعية الموجودة في الملفوف الأحمر تتغيّر ألوانها بتغيّر حموضة الوسط.'},
+    cocl2:      {type:'complex', label:'أيون معقّد تناسقي ثماني السطوح — شكل هندسي ثلاثي الأبعاد أصيل'}
+  };
+
+  /* ================= animated pseudo-3D molecule renderer (billboarded balls + bead bonds, rotating in real 3D space) ================= */
+  function mol3dBall(x,y,z,size,color,label){
+    var bg = 'radial-gradient(circle at 32% 26%, rgba(255,255,255,.92), rgba(255,255,255,0) 50%), radial-gradient(circle at 66% 74%, rgba(0,0,0,.30), transparent 62%), '+color;
+    var posStyle = 'left:calc(50% + '+x+'px); top:calc(50% + '+y+'px); --mz:'+z+'px;';
+    if(label){
+      return '<div class="mol3d-pos" style="'+posStyle+'"><div class="mol3d-counter"><div class="mol3d-ball" style="width:'+size+'px;height:'+size+'px;font-size:'+Math.max(8,size*0.34)+'px;background:'+bg+'">'+label+'</div></div></div>';
+    }
+    return '<div class="mol3d-pos" style="'+posStyle+'"><div class="mol3d-ball mol3d-bead" style="width:'+size+'px;height:'+size+'px;background:'+bg+'"></div></div>';
+  }
+  function mol3dBond(p1,p2){
+    var n=7, html='';
+    for(var i=1;i<n;i++){
+      var t=i/n;
+      html += mol3dBall(p1.x+(p2.x-p1.x)*t, p1.y+(p2.y-p1.y)*t, p1.z+(p2.z-p1.z)*t, 4, 'var(--ink-faint)', null);
+    }
+    return html;
+  }
+  function mol3dHydratedGroup(cxOffset, ion){
+    var html = mol3dBall(cxOffset, 0, 0, 34, ion.color, ion.label);
+    var octa = [[26,0,0],[-26,0,0],[0,26,0],[0,-26,0],[0,0,26],[0,0,-26]];
+    octa.forEach(function(p){ html += mol3dBall(cxOffset + p[0]*0.6, p[1]*0.85, p[2], 9, '#EAF3F5', null); });
+    return html;
+  }
+  function structure3DHTML(struct){
+    var html = '';
+    if(struct.type==='covalent'){
+      struct.bonds.forEach(function(b){
+        var a1=struct.atoms[b[0]], a2=struct.atoms[b[1]];
+        html += mol3dBond({x:a1.x-80,y:a1.y-65,z:a1.z||0}, {x:a2.x-80,y:a2.y-65,z:a2.z||0});
+      });
+      struct.atoms.forEach(function(a){
+        html += mol3dBall(a.x-80, a.y-65, a.z||0, a.r*1.9, a.color, a.el);
+      });
+    } else if(struct.type==='ionicLattice' || struct.type==='metallic'){
+      var isLattice = struct.type==='ionicLattice';
+      var spacing = 28;
+      for(var i=0;i<3;i++){
+        for(var j=0;j<3;j++){
+          for(var k=0;k<2;k++){
+            var isCation = (i+j+k)%2===0;
+            var x=(i-1)*spacing, y=(j-1)*spacing, z=(k-0.5)*spacing;
+            var color = isLattice ? (isCation? struct.cation.color : struct.anion.color) : (struct.color||'#9AA5AC');
+            var size = isLattice ? (isCation?15:21) : 19;
+            html += mol3dBall(x,y,z,size,color,null);
+          }
+        }
+      }
+    } else if(struct.type==='hydrated'){
+      html += mol3dHydratedGroup(-46, struct.ion);
+      html += mol3dHydratedGroup(46, struct.counter);
+    } else if(struct.type==='complex'){
+      var octa=[[36,0,0],[-36,0,0],[0,36,0],[0,-36,0],[0,0,36],[0,0,-36]];
+      octa.forEach(function(p){ html += mol3dBond({x:0,y:0,z:0},{x:p[0],y:p[1],z:p[2]}); });
+      octa.forEach(function(p){ html += mol3dBall(p[0],p[1],p[2],21,'#2E9CFF',null); });
+      html += mol3dBall(0,0,0,32,'#C77DA6','Co');
+    } else if(struct.type==='organic'){
+      if(struct.organicShape==='ring'){
+        var ring=[];
+        for(var ri=0; ri<6; ri++){ var ang=ri*(Math.PI*2/6); ring.push({x:Math.cos(ang)*34, y:Math.sin(ang)*34, z:(ri%2? 15:-15)}); }
+        for(var ri2=0; ri2<6; ri2++){ html += mol3dBond(ring[ri2], ring[(ri2+1)%6]); }
+        ring.forEach(function(p){ html += mol3dBall(p.x,p.y,p.z,19,'#8a8f93','C'); });
+      } else {
+        var n = struct.chainLen||4, chain=[];
+        for(var ci=0; ci<n; ci++){ chain.push({x:(ci-(n-1)/2)*27, y:(ci%2? 13:-13), z:(ci%2? -17:17)}); }
+        for(var ci2=0; ci2<n-1; ci2++){ html += mol3dBond(chain[ci2], chain[ci2+1]); }
+        chain.forEach(function(p){ html += mol3dBall(p.x,p.y,p.z,18,'#8a8f93','C'); });
+        if(struct.hasO){
+          var last = chain[n-1];
+          var op = {x:last.x+24, y:last.y-12, z:last.z+12};
+          html += mol3dBond(last, op);
+          html += mol3dBall(op.x,op.y,op.z,19,'#E24B3C','O');
+        }
+      }
+    }
+    return '<div class="mol3d-stage"><div class="mol3d-scene">'+html+'</div></div>';
+  }
+  function structureLegendHTML(chem, struct){
+    if(!struct) return '<p style="margin-block-start:6px;font-size:.8rem;color:var(--ink-soft)">لا يتوفّر رسم مبسّط لهذه المادة بعد.</p>';
+    if(struct.type==='ionicLattice' || struct.type==='hydrated'){
+      var a = struct.cation||struct.ion, b = struct.anion||struct.counter;
+      return '<div class="struct-legend"><span><i style="background:'+a.color+'"></i>'+a.label+'</span><span><i style="background:'+b.color+'"></i>'+b.label+'</span></div>';
+    } else if(struct.type==='metallic'){
+      return '<div class="struct-legend"><span><i style="background:'+struct.color+'"></i>ذرات '+chem.name+' متماثلة، مرتّبة في شبكة منتظمة</span></div>';
+    } else if(struct.type==='organic'){
+      return '<p style="margin-block-start:6px;font-size:.78rem;color:var(--ink-soft)">'+struct.formulaNote+'</p>';
+    } else if(struct.type==='complex'){
+      return '<p style="margin-block-start:6px;font-size:.78rem;color:var(--ink-soft)">أيون Co²⁺ مركزي محاط بست جزيئات ماء (ليجندات) مرتّبة حول زواياه بشكل ثماني السطوح الحقيقي.</p>';
+    }
+    return '';
+  }
+  function moleculeCloudContent(chemId){
+    var chem = CHEM_BY_ID[chemId]; if(!chem) return '';
+    var struct = STRUCTURES[chemId];
+    return '<div class="mcp-title"><b>'+chem.name+'</b><span>'+chem.formula+'</span></div>'+
+      (struct? structure3DHTML(struct) : '<p style="text-align:center;font-size:.8rem;padding:14px 4px">لا يتوفّر رسم مبسّط لهذه المادة بعد.</p>')+
+      (struct? '<p class="mcp-label">'+struct.label+'</p>' : '')+
+      structureLegendHTML(chem, struct);
+  }
+
+  var TOOLS = [
+    {id:'burner', name:'موقد بنسن', icon:'#ic-flame'},
+    {id:'ice', name:'مكعبات ثلج', icon:'#ic-snow'},
+    {id:'therm', name:'ميزان حرارة', icon:'#ic-thermo'},
+    {id:'stir', name:'ساق تحريك', icon:'#ic-stir'},
+    {id:'balance', name:'ميزان رقمي (اسحبيه للمنضدة)', icon:'#ic-balance'}
+  ];
+  function massOf(v){
+    var m = 0;
+    v.solids.forEach(function(id){ var c = CHEM_BY_ID[id]; if(c && c.mass) m += c.mass; });
+    return m;
+  }
+
+  var SAFETY_ITEMS = [
+    {icon:'#ic-shield', t:'الوقاية الشخصية', d:'نظارة واقية طوال الوقت، معطف مخبري مغلق، وقفازات مناسبة لنوع المادة.'},
+    {icon:'#ic-flame', t:'المواد القابلة للاشتعال والحرارة', d:'تُبعد المذيبات عن اللهب المكشوف، ويُستخدم ماسك الكؤوس مع أي إناء ساخن.'},
+    {icon:'#ic-thermo', t:'الأحماض والقواعد المركّزة', d:'تُستخدم بكميات ضئيلة جداً تحت غطاء ساحب، ويُغسل أي تلامس فوراً بماء غزير.'},
+    {icon:'#ic-book', t:'التوثيق', d:'سجّلي كل ملاحظة فور حدوثها بدل الاعتماد على الذاكرة.'}
+  ];
+
+  /* ================= real curriculum experiments ================= */
+  var EXPERIMENTS = [
+    { id:'ex1', cat:'mixtures', icon:'#ic-thermo',
+      title:'تغير الطاقة عند تكوين المحاليل',
+      question:'تتغيّر الطاقة عند تكوّن المحلول نتيجة تأثير قوتين: قوة التجاذب بين الجسيمات الذاتية في المذاب، وقوة التجاذب بين جسيمات المذاب والمذيب. كيف يمكن ملاحظة هذا التغيّر؟',
+      explain:'عند إذابة أي ملح، يحدث تنافس بين طاقتين: الطاقة اللازمة لكسر الروابط الأيونية داخل البلورة (طاقة الشبكة البلورية)، والطاقة المتحررة عند إحاطة أيونات الملح بجزيئات الماء (طاقة الإماهة). في كلوريد الكالسيوم CaCl₂ تكون طاقة الإماهة المتحررة أكبر من طاقة الشبكة اللازم كسرها، فيتحرر فائض من الطاقة على شكل حرارة (تفاعل طارد للحرارة). أمّا في كلوريد الأمونيوم NH₄Cl فيحدث العكس: طاقة كسر الشبكة أكبر من طاقة الإماهة المتحررة، فتُمتصّ الحرارة من المحلول ومن الكأس المحيط به (تفاعل ماصّ للحرارة)، وهذا ما يفسّر انخفاض درجة الحرارة الذي تلاحظينه.',
+      steps:[
+        'اسحبي ميزاناً رقمياً إلى المنضدة، ثم اسحبي كلوريد الأمونيوم الخام NH₄Cl فوق كفّته — اضغطي على قراءة الوزن واكتبي 10 لتضبطيه عند 10g بدقة، تماماً كوزنه على ميزان حقيقي.',
+        'اسحبي المادة من فوق الميزان مباشرة وأفلتيها داخل كأس زجاجي 100mL فارغ على المنضدة.',
+        'اسحبي مخبار مدرج إلى المنضدة واسكبي فيه ماءً، ثم اضغطي على قراءة "الحجم الحالي" في تفاصيله واكتبي 30 لضبطه عند 30mL بدقة — بعدها اسحبي المخبار نفسه وأفلتيه فوق الكأس لتسكبي الماء المقاس بداخله.',
+        'لاحظي اللون الذي يظهر تلقائياً على زجاج الكأس (برتقالي للسخونة أو أزرق للبرودة) كإيحاء سريع بحالته، ثم اسحبي ميزان الحرارة عليه لتسجيل الدرجة الدقيقة.',
+        'كرّري الخطوات نفسها في كأس جديد: زني 10g من كلوريد الكالسيوم CaCl₂ على الميزان الرقمي وانقليها إلى الكأس، ثم قيسي 30mL ماء بالمخبار المدرج كما سبق واسكبيها فيه، وسجّلي أعلى درجة حرارة يصل إليها المحلول.',
+        'قارني بين العمليتين: أيّهما كانت طاردة للحرارة (الإيحاء اللوني والقراءة يميلان للبرتقالي)، وأيّهما كانت ماصّة لها (يميلان للأزرق)؟'
+      ],
+      setup:{equip:'beaker', chems:['water','cacl2']},
+      quiz:[
+        {q:'إذابة كلوريد الكالسيوم CaCl₂ في الماء تفاعل:', opts:['طارد للحرارة (ترتفع الحرارة)','ماصّ للحرارة (تنخفض الحرارة)','لا يغيّر درجة الحرارة','يبرّد ثم يسخّن بالتساوي'], correct:0, explain:'إذابة CaCl₂ تفاعل طارد للحرارة، فترتفع درجة حرارة المحلول بشكل ملحوظ.'},
+        {q:'إذابة كلوريد الأمونيوم NH₄Cl في الماء تفاعل:', opts:['طارد للحرارة','ماصّ للحرارة','متعادل تماماً','ينتج غازاً سامّاً'], correct:1, explain:'إذابة NH₄Cl تمتصّ طاقة من المحيط فتنخفض درجة حرارة المحلول، وهي مبدأ عمل أكياس التبريد الفورية. جرّبي إضافتها بدلاً من CaCl₂ في وعاء آخر لمقارنة الفرق.'}
+      ]},
+    { id:'ex2', cat:'mixtures', icon:'#ic-snow',
+      title:'الانخفاض في درجة التجمد',
+      question:'كيف يمكن قياس الانخفاض في درجة التجمد عند إضافة الملح إلى الثلج؟',
+      explain:'عند إضافة ملح الطعام NaCl إلى الثلج تنخفض درجة تجمّد الماء عن الصفر المئوي — وتُسمّى هذه الخاصية الانخفاض في درجة التجمد، وهي خاصية جماعية (Colligative Property) تعتمد على عدد جسيمات المذاب الذائبة، لا على نوعها. والسبب أن سطح مكعبات الثلج تحيط به دائماً طبقة رقيقة من الماء السائل؛ فحين تذوب بلورات NaCl فيها تتفكك إلى أيونات Na⁺ وCl⁻ تتوزّع بين جزيئات الماء وتشغل مواقع كانت لازمة لالتحام جزيئات الماء معاً في الترتيب البلوري المنتظم للجليد، فتُعيق إعادة تجمّدها. لهذا يحتاج الماء المالح إلى درجة حرارة أقل من الصفر المئوي حتى يتجمّد من جديد. وهذا بالضبط ما ستلاحظينه في التجربة: بعد إضافة الملح والتحريك تستمر قراءة ميزان الحرارة بالانخفاض إلى ما دون الصفر، بدل أن تثبت عنده كما يحدث مع الثلج النقي وحده — وهو نفس المبدأ الذي يجعل رشّ الملح على الطرقات المتجمدة شتاءً يُذيب الجليد ويُبقي الماء سائلاً رغم برودة الجو تحت الصفر.',
+      steps:[
+        'اسحبي كأساً زجاجياً إلى المنضدة، أضيفي إليه مكعبات ثلج، ثم اسكبي القليل من الماء لتغطيتها.',
+        'اسحبي ميزان الحرارة على الكأس وسجّلي درجة حرارته الابتدائية (قريبة من صفر مئوي).',
+        'اسحبي ميزاناً رقمياً إلى المنضدة، زني عليه كمية من ملح الطعام الخام NaCl (اكتبي الوزن الذي تريدينه، مثلاً 5)، ثم اسحبيها من فوق الميزان وأفرغيها في الثلج.',
+        'اسحبي ساق التحريك على الكأس لتحريك المزيج جيداً، وراقبي ميزان الحرارة باستمرار — ولاحظي أيضاً ازدياد زرقة اللون التوضيحي على الزجاج — وسجّلي أدنى درجة حرارة يصل إليها المزيج.',
+        'قارني بين درجة حرارة الثلج النقي ودرجة حرارة الثلج المملّح.',
+        'اربطي النتيجة بمفهوم الانخفاض في درجة التجمد عند إذابة مادة صلبة في المذيب.'
+      ],
+      setup:{equip:'beaker', chems:['water','nacl_solid']},
+      quiz:[
+        {q:'إضافة ملح الطعام إلى الثلج يجعل درجة تجمّد الماء:', opts:['ترتفع فوق الصفر المئوي','تنخفض عن الصفر المئوي','تبقى صفراً دون تغيّر','تختفي تماماً'], correct:1, explain:'إضافة مادة مذابة كالملح تخفّض درجة تجمّد الماء عن صفر درجة مئوية — ما يسمى بخاصية الانخفاض في درجة التجمد.'},
+        {q:'لماذا يُستخدم الملح لإذابة الثلج على الطرقات شتاءً؟', opts:['لأنه يرفع درجة حرارة الجو','لأنه يخفض درجة تجمد الماء فيبقى سائلاً في برودة أكبر','لأنه يلوّن الثلج فقط','لا علاقة كيميائية بذلك'], correct:1, explain:'خفض درجة التجمد يجعل الماء المالح يبقى سائلاً عند درجات حرارة تكون فيها المياه النقية قد تجمّدت.'}
+      ]},
+    { id:'ex3', cat:'mixtures', icon:'#ic-drop',
+      title:'العوامل المؤثرة في الذائبية',
+      question:'كيف تؤثر درجة الحرارة والتحريك في سرعة تكوّن محلول بلورات كبريتات النحاس؟',
+      explain:'تُفسَّر سرعة الذوبان وفق نظرية التصادم: كي تنفصل أيونات البلورة الصلبة عن بعضها وتحيط بها جزيئات الماء، يجب أن تتصادم جزيئات الماء بسطح البلورة بطاقة وتكرار كافيين. رفع درجة الحرارة يزيد الطاقة الحركية لجزيئات الماء فتتصادم بسرعة وطاقة أكبر مع سطح البلورة، فتذوب أسرع. التحريك يزيل باستمرار طبقة المحلول المشبع الملاصقة للبلورة ويجدّد تلامسها بجزيئات ماء غير مشبعة، فيسرّع الذوبان أيضاً دون تغيير درجة الحرارة. أمّا تكسير البلورات لتصغير حجمها فيزيد مساحة السطح المعرّضة للماء، وهو عامل ثالث يسرّع الذوبان بالمبدأ نفسه.',
+      steps:[
+        'اسحبي كأسين زجاجيين متطابقين، واسكبي فيهما ماءً واضبطي حجم كل منهما من تفاصيله ليتساويا بدقة.',
+        'اسحبي موقد بنسن على أحد الكأسين، ثم اسحبي المؤشر الجانبي الذي يظهر بجواره إلى الأعلى لرفع شدة التسخين إلى الحد الأقصى، واتركي الكأس الآخر بارداً في درجة حرارة الغرفة.',
+        'زني كميتين متساويتين تماماً من بلورات كبريتات النحاس CuSO₄ على الميزان الرقمي (بنفس الرقم بالضبط)، ثم أضيفي إحداهما إلى كل كأس. لا داعي للحرص على إضافتهما في اللحظة نفسها؛ كل كأس يتفاعل بحسب درجة حرارته الحالية بشكل مستقل ومستمر، بصرف النظر عن ترتيب الإضافة بين الكأسين.',
+        'راقبي أيّ الكأسين يتحول لونه إلى الأزرق (دلالة الذوبان) أسرع — يمكنك استخدام زر تسريع الوقت (»») أعلى المنضدة لتقليل مدة الانتظار.',
+        'كرّري التجربة بكأسين آخرين بنفس درجة الحرارة: اسحبي ساق التحريك على أحدهما لتفعيل التحريك المستمر، واتركي الآخر دون تحريك، وقارني سرعة الذوبان بينهما.',
+        'اربطي بين ارتفاع درجة الحرارة والتحريك ومساحة سطح البلورات، وبين ازدياد سرعة تكوّن المحلول.'
+      ],
+      setup:{equip:'beaker', chems:['water','cuso4_solid']},
+      quiz:[
+        {q:'رفع درجة حرارة الماء يجعل ذوبان معظم المواد الصلبة فيه:', opts:['أسرع، لأن حركة الجسيمات وطاقتها تزداد','أبطأ دائماً','بلا أي تأثير','يمنع الذوبان نهائياً'], correct:0, explain:'ارتفاع درجة الحرارة يزيد الطاقة الحركية لجسيمات الماء والمادة الصلبة، فتتكرر تصادماتها وتنفصل جسيمات المادة الصلبة عن بعضها وتذوب بسرعة أكبر.'},
+        {q:'التحريك المستمر أثناء الذوبان يجعل العملية:', opts:['أسرع، لأنه يُبعد المحلول المشبع المحيط بالبلورة ويتيح تلامساً جديداً بالماء','أبطأ','بلا أي تأثير','يمنع الذوبان نهائياً'], correct:0, explain:'التحريك يزيح باستمرار طبقة المحلول المشبع الملاصقة لسطح البلورة، فيتيح لجزيئات ماء جديدة الوصول إلى المادة الصلبة، مما يسرّع الذوبان.'}
+      ]},
+    { id:'ex4', cat:'acidbase', icon:'#ic-drop',
+      title:'تفاعل حمض وقاعدة',
+      question:'ماذا يحدث عند تفاعل محلول حمضي مع محلول قاعدي، وكيف نعرف اقتراب المحلول من التعادل؟',
+      explain:'تفاعل التعادل هو في جوهره اتحاد أيونات الهيدروجين H⁺ القادمة من الحمض مع أيونات الهيدروكسيد OH⁻ القادمة من القاعدة لتكوين جزيئات ماء متعادلة: H⁺ + OH⁻ → H₂O. دليل الفينولفثالين يتغيّر تركيبه الجزيئي حسب تركيز أيونات H⁺ في الوسط: فهو وردي اللون عندما يكون الوسط قاعدياً (تركيز OH⁻ عالٍ)، ويفقد لونه عندما تكفي كمية الحمض المضافة لاستهلاك كل أيونات OH⁻ تقريباً. لذلك فإن اختفاء اللون الوردي لحظة إضافة الحمض هو إشارة بصرية مباشرة على أن عدد مولات H⁺ المضافة اقترب من عدد مولات OH⁻ الأصلية، أي أن المحلول اقترب من نقطة التعادل.',
+      steps:[
+        'اسحبي مخبار مدرج إلى المنضدة، اسكبي فيه محلول هيدروكسيد الصوديوم NaOH واضبطي حجمه من تفاصيله على القيمة التي تريدينها (مثلاً 25)، ثم اسحبيه وأفلتيه فوق دورق مخروطي فارغ لتسكبي المحلول المقاس بداخله.',
+        'أضيفي 2-3 قطرات من دليل الفينولفثالين، ولاحظي ظهور اللون الوردي (دلالة على وسط قاعدي).',
+        'اسحبي ساق التحريك على الدورق لتفعيل التحريك المستمر، ثم أضيفي محلول حمض الهيدروكلوريك المخفف تدريجياً.',
+        'راقبي اللون الوردي وهو يتلاشى تدريجياً كلما أُضيف مزيد من الحمض.',
+        'توقّفي عن الإضافة فور اختفاء اللون الوردي بالكامل — وهذه علامة اقتراب المحلول من التعادل.',
+        'اربطي بين اختفاء اللون وتفاعل أيونات H⁺ من الحمض مع أيونات OH⁻ من القاعدة لتكوين الماء.'
+      ],
+      setup:{equip:'flask', chems:['naoh','phenol']},
+      quiz:[
+        {q:'ناتج تفاعل تعادل تام بين حمض قوي وقاعدة قوية هو:', opts:['ملح وماء فقط','غاز هيدروجين','راسب ملوّن دائماً','لا يحدث أي تفاعل'], correct:0, explain:'تفاعل التعادل بين حمض وقاعدة ينتج ملحاً وماءً؛ إذ تتحد أيونات H⁺ مع أيونات OH⁻ لتكوّن جزيئات الماء H₂O.'},
+        {q:'اختفاء اللون الوردي للفينولفثالين أثناء إضافة الحمض إلى القاعدة يدل على:', opts:['أن الوسط أصبح حمضياً أو قريباً من التعادل','أن التفاعل توقف قبل أن يبدأ','أن القاعدة تبخّرت','لا دلالة له'], correct:0, explain:'الفينولفثالين وردي في الوسط القاعدي وعديم اللون في الوسط الحمضي أو المتعادل، فاختفاء اللون يدل على أن كمية الحمض المضافة عادلت القاعدة أو تجاوزتها.'}
+      ]},
+    { id:'ex5', cat:'acidbase', icon:'#ic-drop',
+      title:'المقارنة بين قوى الأحماض',
+      question:'كيف تستطيع أن تحدد القوى النسبية للمحاليل الحمضية؟',
+      explain:'قوة الحمض تُقاس بمدى تأينه (تفككه إلى أيونات) في الماء، وليس بتركيزه. حمض الهيدروكلوريك HCl حمض قوي يتأين بالكامل تقريباً منتجاً أكبر عدد ممكن من أيونات H⁺، بينما حمض الإيثانويك (الخل) CH₃COOH حمض ضعيف يتأين جزئياً فقط ويبقى معظمه على هيئة جزيئات غير متأينة. زيادة عدد الأيونات الحرة في المحلول تزيد قدرته على توصيل التيار الكهربائي وتخفض قيمة الرقم الهيدروجيني pH له. لذلك، فإن المحلول الذي يُضيء مصباحاً بشكل أقوى ويعطي قراءة pH أقل عند التركيز نفسه هو الحمض الأقوى، لأنه أطلق عدداً أكبر من الأيونات في المحلول.',
+      steps:[
+        'حضّري محلولين في أنبوبَي اختبار بنفس الحجم تقريباً: حمض الهيدروكلوريك المخفف وحمض الإيثانويك (الخل)، واضبطي حجم كل منهما من تفاصيله ليتساويا بدقة.',
+        'اقيسي الرقم الهيدروجيني pH لكل محلول باستخدام ورقة عباد الشمس أو جهاز قياس pH.',
+        'اختبري كلا المحلولين بغمس قطبين موصولين بدائرة كهربائية بسيطة تحوي مصباحاً صغيراً لمقارنة شدة التوصيل الكهربائي.',
+        'سجّلي شدة إضاءة المصباح أو قراءة التوصيلية لكل محلول.',
+        'قارني بين قيمتي الرقم الهيدروجيني وشدة التوصيل للمحلولين.',
+        'استنتجي أي الحمضين يتأين بدرجة أكبر في الماء، وبالتالي أيهما أقوى.'
+      ],
+      setup:{equip:'tube', chems:['vinegar','hcl_d']},
+      quiz:[
+        {q:'حمض الإيثانويك (الخلّ) يُعدّ حمضاً:', opts:['قوياً يتأين كلياً','ضعيفاً يتأين جزئياً في الماء','قاعدة وليس حمضاً','متعادلاً تماماً'], correct:1, explain:'حمض الإيثانويك حمض ضعيف يتأين جزئياً فقط في الماء، بخلاف حمض الهيدروكلوريك القوي الذي يتأين كلياً.'},
+        {q:'كيف نفرّق عملياً بين حمض قوي وحمض ضعيف بنفس التركيز؟', opts:['بالطعم فقط','بقياس التوصيل الكهربائي أو الرقم الهيدروجيني للمحلولين','باللون فقط','لا توجد طريقة عملية'], correct:1, explain:'الحمض القوي يتأين بشكل أكبر فينتج أيونات أكثر، مما يزيد التوصيل الكهربائي ويخفّض الرقم الهيدروجيني مقارنة بحمض ضعيف بنفس التركيز.'}
+      ]},
+    { id:'ex6', cat:'acidbase', icon:'#ic-drop',
+      title:'معايرة القاعدة',
+      question:'كيف يمكن إجراء معايرة لتحديد المولارية المجهولة لمحلول قاعدة؟',
+      explain:'تعتمد المعايرة على مبدأ التكافؤ الكيميائي: عند نقطة التكافؤ، يكون عدد مولات أيونات H⁺ المضافة من الحمض مساوياً تماماً لعدد مولات أيونات OH⁻ الأصلية في القاعدة. دليل الفينولفثالين يفقد لونه الوردي في هذه اللحظة تقريباً (نقطة النهاية)، مشيراً عملياً إلى اكتمال التعادل. بمعرفة حجم الحمض المستهلك من السحاحة وتركيزه المعلوم، يمكن حساب عدد مولات الحمض المتفاعلة، وبما أنها تساوي عدد مولات القاعدة عند التكافؤ (لتفاعل بنسبة 1:1)، تُحسب المولارية المجهولة للقاعدة من العلاقة: تركيز القاعدة = (حجم الحمض × تركيزه) ÷ حجم القاعدة.',
+      steps:[
+        'اسحبي مخبار مدرج، اسكبي فيه محلول القاعدة (NaOH) مجهول التركيز، واضبطي حجمه من تفاصيله على القيمة المعلومة التي تريدين البدء بها، ثم اسكبيه في دورق مخروطي بإفلاته فوقه.',
+        'أضيفي 2-3 قطرات من دليل الفينولفثالين إلى الدورق، ولاحظي ظهور اللون الوردي.',
+        'املئي السحاحة (أو مخبار مدرج آخر يمثّلها) بمحلول حمض معلوم التركيز، واضبطي حجمه بدقة من تفاصيله.',
+        'اسحبي ساق التحريك على الدورق لتفعيل التحريك المستمر، ثم أضيفي الحمض تدريجياً وبحذر إليه.',
+        'أوقفي الإضافة فور أول تغيّر دائم في اللون (اختفاء اللون الوردي) — وهذه نقطة النهاية.',
+        'سجّلي حجم الحمض المستخدم من قراءة السحاحة.',
+        'احسبي التركيز المولاري المجهول للقاعدة باستخدام معادلة المعايرة: (حجم الحمض × تركيزه) = (حجم القاعدة × تركيزها).'
+      ],
+      setup:{equip:'flask', chems:['phenol','naoh']},
+      quiz:[
+        {q:'الهدف من معايرة القاعدة بحمض معلوم التركيز هو:', opts:['تحديد التركيز المولاري المجهول للقاعدة','تغيير لون القاعدة نهائياً','تبريد المحلول','إذابة القاعدة في الحمض فقط'], correct:0, explain:'المعايرة تستخدم حجماً وتركيزاً معلومَين من الحمض لحساب التركيز المولاري المجهول للقاعدة عبر معادلة التعادل.'},
+        {q:'عند أي نقطة تُوقَف إضافة الحمض أثناء المعايرة؟', opts:['عند أول تغيّر دائم في لون الدليل (نقطة النهاية)','بعد إضافة كل الحمض المتوفر','عند غليان المحلول','لا يوجد وقت محدد'], correct:0, explain:'تُوقَف الإضافة فور ظهور أول تغيّر دائم في لون الدليل (نقطة النهاية)، والتي تقترب عادة من نقطة التكافؤ الفعلية.'}
+      ]},
+    { id:'ex7', cat:'redox', icon:'#ic-fe',
+      title:'تفاعل الحديد وكبريتات النحاس II',
+      question:'ماذا يحدث عندما يتفاعل الحديد وكبريتات النحاس II؟',
+      explain:'هذا تفاعل إزاحة أحادية وأكسدة-اختزال في آن واحد: الحديد Fe أنشط كيميائياً من النحاس Cu (أعلى منه في سلسلة النشاطية)، لذا فهو يفقد إلكترونين ويتأكسد مكوّناً أيونات Fe²⁺ التي تذوب في المحلول (Fe → Fe²⁺ + 2e⁻)، بينما تكتسب أيونات Cu²⁺ الموجودة في المحلول هذين الإلكترونين وتُختزل إلى ذرات نحاس فلزّي متعادل تترسّب على سطح المسمار (Cu²⁺ + 2e⁻ → Cu). هذا التبادل للإلكترونات يفسّر ظهور الطبقة الحمراء البنية من النحاس على المسمار، وفي الوقت نفسه تلاشي اللون الأزرق المميز لأيونات Cu²⁺ وظهور اللون الأخضر الباهت المميز لأيونات Fe²⁺ في المحلول.',
+      steps:[
+        'اسكبي كمية من محلول كبريتات النحاس الأزرق CuSO₄ في أنبوب اختبار.',
+        'اسحبي ميزاناً رقمياً إلى المنضدة، وزني عليه مسماراً حديدياً نظيفاً، وسجّلي كتلته (كما تظهر على شاشة الميزان) قبل التجربة.',
+        'اسحبي المسمار من فوق الميزان وأغمسيه بالكامل في المحلول.',
+        'راقبي التغيّرات على سطح المسمار وفي لون المحلول كل بضع دقائق.',
+        'بعد مرور الوقت الكافي، أخرجي المسمار ولاحظي الطبقة الحمراء البنية التي تكوّنت عليه.',
+        'سجّلي التغيّر في لون المحلول من الأزرق إلى الأخضر الباهت، واربطيه بتكوّن أيونات Fe²⁺.'
+      ],
+      setup:{equip:'tube', chems:['cuso4','fe']},
+      quiz:[
+        {q:'عند غمس مسمار حديد في محلول كبريتات النحاس الأزرق، يحدث:', opts:['لا شيء','يترسّب نحاس فلزّي ويتحول اللون إلى الأخضر الباهت','يذوب الحديد بالكامل دون أثر','يتحول المحلول إلى اللون الأصفر'], correct:1, explain:'الحديد يزيح النحاس من محلوله فيترسّب نحاس فلزّي على المسمار، بينما يتكوّن كبريتات حديد II ذات اللون الأخضر الباهت.'},
+        {q:'لماذا يزيح الحديد النحاس من محلول كبريتات النحاس؟', opts:['لأن الحديد أنشط من النحاس في السلسلة الفلزية','لأن النحاس أنشط من الحديد','لأن درجة الحرارة مرتفعة','لأن المحلول مركّز جداً'], correct:0, explain:'كل فلزّ يزيح من محلول ملحه أي فلزّ أقل نشاطاً منه؛ والحديد أعلى من النحاس في سلسلة النشاط.'}
+      ]},
+    { id:'ex8', cat:'redox', icon:'#ic-refresh',
+      title:'ملاحظة تفاعل الأكسدة والاختزال',
+      question:'كيف يمكن إزالة الشوائب (طبقة التشويه السوداء) عن الفضة، وما علاقة ذلك بتفاعلات الأكسدة والاختزال؟',
+      explain:'الطبقة السوداء على الفضة المغشّاة هي كبريتيد الفضة Ag₂S، وتُعالَج هذه الطريقة المشكلة كهروكيميائياً بدل الحكّ الفيزيائي: عندما تلامس الفضة رقاقة الألومنيوم داخل محلول صودا الخبز (وهو موصل إلكتروليتي)، يصبح الألومنيوم — وهو الأنشط كيميائياً من الفضة — هو الطرف الذي يتأكسد ويفقد إلكترونات (Al → Al³⁺ + 3e⁻)، بينما تنتقل هذه الإلكترونات عبر نقطة التلامس لتختزل أيونات الفضة في طبقة Ag₂S مرة أخرى إلى ذرات فضة فلزّية لامعة (Ag⁺ + e⁻ → Ag). بذلك تُعاد الفضة إلى حالتها الأصلية دون أن تفقد شيئاً من كتلتها، بينما يُستهلك الألومنيوم تدريجياً بدلاً منها. وارتفاع درجة الحرارة يُسرّع سرعة هذا التفاعل الكهروكيميائي كما في أي تفاعل كيميائي آخر.',
+      steps:[
+        'بطّني قاع كأس أو وعاء بقطعة من رقائق الألومنيوم.',
+        'ضعي قطعة الفضة المغشّاة (ذات الطبقة السوداء) فوق رقاقة الألومنيوم بحيث تلامسها مباشرة.',
+        'أذيبي ملعقة من صودا الخبز في ماء ساخن تقريباً، ثم اسكبي المحلول فوق الفضة حتى يغطّيها بالكامل.',
+        'تأكدي من استمرار تلامس الفضة مع الألومنيوم طوال فترة التفاعل.',
+        'راقبي زوال اللون الأسود تدريجياً وعودة لمعان الفضة خلال دقائق — اسحبي موقد بنسن تحت الوعاء وارفعي شدته من المؤشر الجانبي إذا أردتِ تسريع التفاعل.',
+        'اسحبي الفضة وأشطفيها بالماء، ثم قارني لمعانها بحالتها قبل التجربة.'
+      ],
+      setup:{equip:'beaker', chems:['ag_tarnished','al_foil','baking_soda']},
+      quiz:[
+        {q:'في تنظيف الفضة المغشّاة بالألومنيوم وصودا الخبز، أي فلزّ يتأكسد فعلياً؟', opts:['الفضة','الألومنيوم','كلاهما بالتساوي','لا يوجد تأكسد'], correct:1, explain:'الألومنيوم هو الذي يتأكسد فعلياً (يفقد إلكترونات)، بينما تُختزل كبريتيد الفضة إلى فضة لامعة من جديد — مثال حيّ على تفاعل أكسدة واختزال.'},
+        {q:'لماذا نستخدم ماءً ساخناً في هذه التجربة؟', opts:['لتبريد التفاعل','لأن رفع الحرارة يسرّع تفاعل الأكسدة والاختزال','لإذابة الفضة نهائياً','لا داعي للحرارة إطلاقاً'], correct:1, explain:'رفع درجة الحرارة يزيد سرعة تفاعل الأكسدة والاختزال فتتم إزالة التشويه بشكل أوضح وأسرع.'}
+      ]},
+    { id:'ex9', cat:'electrochem', icon:'#ic-shield',
+      title:'تعرف شاحنة متآكلة (قديمة)',
+      question:'كيف يمكن استخدام سلسلة النشاطية الكيميائية لتفسير التآكل الذي يصيب هياكل السيارات والشاحنات القديمة؟',
+      explain:'سلسلة النشاطية ترتّب الفلزّات حسب قابليتها لفقد الإلكترونات (التأكسد): كلما كان الفلزّ أعلى في السلسلة، كان أسرع في إزاحة الفلزّات الأقل نشاطاً من محاليل أملاحها وأسرع تفاعلاً مع الأحماض منتجاً غاز الهيدروجين. اختبار الفلزّات الأربعة مع نترات الفضة AgNO₃ وحمض الهيدروكلوريك المخفف وكبريتات الخارصين ZnSO₄ يكشف ترتيبها النسبي: من يُكوّن راسب فضة أو فقاعات هيدروجين أسرع وأكثر يكون أنشط. والحديد، مثل معظم الفلزّات المستخدمة في هياكل السيارات، فلزّ نشط نسبياً يتأكسد تلقائياً وببطء عند تعرّضه المستمر للرطوبة والأكسجين في الجو مكوّناً أكسيد الحديد المائي (الصدأ)، وهذا التآكل التدريجي هو تفاعل أكسدة واختزال طبيعي يفسّر سبب تلف هياكل المركبات القديمة مع الزمن.',
+      steps:[
+        'زني قطعاً من النحاس والرصاص والحديد والمغنيسيوم على الميزان الرقمي لتكون متقاربة الكتلة تقريباً (لضمان مقارنة عادلة)، ثم ضعي كل قطعة في أنبوب اختبار منفصل.',
+        'أضيفي إلى كل قطعة فلزّ محلول نترات الفضة AgNO₃، وسجّلي أيّها يُكوّن راسباً فضياً لامعاً.',
+        'كرّري التجربة بأنابيب جديدة، مضيفةً محلول حمض الهيدروكلوريك المخفف HCl إلى كل فلزّ، وراقبي تصاعد فقاعات الهيدروجين.',
+        'كرّري التجربة مرة أخرى، مضيفةً محلول كبريتات الخارصين ZnSO₄ إلى كل فلزّ، وراقبي أيّها يُزيح الخارصين.',
+        'رتّبي الفلزّات الأربعة (نحاس، رصاص، حديد، مغنيسيوم) من الأنشط إلى الأقل نشاطاً بناءً على نتائج الاختبارات الثلاثة.',
+        'اربطي ترتيب سلسلة النشاطية بتفسير سبب تآكل هياكل الشاحنات والسيارات القديمة المصنوعة من الحديد بمرور الوقت.'
+      ],
+      setup:{equip:'tube', chems:['agno3','fe']},
+      quiz:[
+        {q:'أي الفلزّات التالية الأكثر نشاطاً في سلسلة النشاطية؟', opts:['الرصاص','النحاس','الحديد','المغنيسيوم'], correct:3, explain:'المغنيسيوم هو الأنشط بين هذه الفلزّات الأربعة، يليه الحديد ثم الرصاص، وأخيراً النحاس الأقل نشاطاً بينها.'},
+        {q:'لماذا تتآكل هياكل السيارات والشاحنات الحديدية القديمة بمرور الوقت؟', opts:['لأن الحديد يتأكسد (يفقد إلكترونات) عند تعرّضه للرطوبة والأكسجين','لأن الحديد لا يتفاعل مع أي شيء','لأن الطلاء وحده هو المتفاعل','بسبب ارتفاع درجة حرارة الجو فقط'], correct:0, explain:'الحديد فلزّ نشط نسبياً يتأكسد في وجود الرطوبة والأكسجين مكوّناً أكسيد الحديد (الصدأ)، وهذا مثال على تفاعل أكسدة واختزال طبيعي بطيء يفسّر تآكل الهياكل المعدنية القديمة.'}
+      ]},
+    { id:'ex10', cat:'electrochem', icon:'#ic-fe',
+      title:'ملاحظة التآكل',
+      question:'أي المسامير أكثر عرضة للتآكل: الملفوف بالمغنيسيوم أم الملفوف بالنحاس؟ وهل يزداد التآكل في الماء المالح؟',
+      explain:'عند لفّ فلزّين مختلفين حول بعضهما في وجود رطوبة، يتكوّن ما يشبه خلية جلفانية صغيرة يتحدد فيها أيّ الفلزّين يتأكسد بحسب موقعهما في سلسلة النشاطية. المغنيسيوم أنشط من الحديد، فهو يتأكسد (يفقد إلكتروناته) بدلاً منه، ويحمي الحديد من الصدأ فيما يُعرف بالحماية الكاثودية بالتضحية — وهو المبدأ نفسه المستخدم لحماية خطوط الأنابيب وهياكل السفن. أمّا النحاس فهو أقل نشاطاً من الحديد، فعند لفّه حول المسمار يصبح الحديد نفسه هو الطرف الأنشط الذي يتأكسد، فيتسارع صدأه بدلاً من أن يُحمى. ووجود الملح في الماء يزيد التوصيل الأيوني بين الطرفين، فيسرّع انتقال الإلكترونات ويزيد معدل التآكل في كلتا الحالتين.',
+      steps:[
+        'جهّزي مسمارين حديديين: لُفّ الأول بشريط مغنيسيوم، ولُفّ الثاني بسلك نحاسي.',
+        'ضعي كل مسمار ملفوف في كأسين منفصلين: أحدهما يحوي ماءً مقطراً، والآخر يحوي ماءً مالحاً (محلول كلوريد الصوديوم).',
+        'كرّري ذلك للمسمار الآخر، لتحصلي على أربع حالات: (مغنيسيوم + ماء مقطر)، (مغنيسيوم + ماء مالح)، (نحاس + ماء مقطر)، (نحاس + ماء مالح).',
+        'اسحبي موقد بنسن على كل كأس واضبطي شدته على المستوى المنخفض من المؤشر الجانبي لتمثيل مكان دافئ، ثم اتركيها طوال الليل (استخدمي زر تسريع الوقت أعلى المنضدة لتمرير الوقت بسرعة).',
+        'افحصي المسامير في اليوم التالي، وسجّلي درجة ظهور الصدأ (اللون البني المحمر) على كل منها.',
+        'قارني بين تأثير نوع الفلزّ الملفوف (مغنيسيوم/نحاس) ونوع الماء (مقطر/مالح) في سرعة تآكل الحديد.'
+      ],
+      setup:{equip:'beaker', chems:['nacl','fe','mg']},
+      quiz:[
+        {q:'المسمار الملفوف بالمغنيسيوم يصدأ أقل من العادي لأن المغنيسيوم:', opts:['أنشط من الحديد فيتأكسد بدلاً منه (حماية بالتضحية)','أقل نشاطاً من الحديد','لا يتفاعل مطلقاً مع الماء','يعزل الحديد عن الهواء فقط دون تفاعل'], correct:0, explain:'المغنيسيوم أنشط من الحديد، فيتأكسد هو (يفقد إلكتروناته) بدلاً من الحديد، فيما يُعرف بالحماية الكاثودية بالتضحية.'},
+        {q:'المسمار الملفوف بالنحاس يصدأ أسرع من العادي لأن النحاس:', opts:['أقل نشاطاً من الحديد فيصبح الحديد هو المصعد المتأكسد','أنشط من الحديد فيحميه','يمنع وصول الماء تماماً','لا علاقة له بسرعة الصدأ'], correct:0, explain:'النحاس أقل نشاطاً من الحديد، فيصبح الحديد المصعد الذي يتأكسد بسرعة أكبر في الخلية الكهروكيميائية المتكوّنة، ويزداد الأمر سوءاً في الماء المالح لأنه يحسّن التوصيل الأيوني.'}
+      ]},
+    { id:'ex11', cat:'electrochem', icon:'#ic-bolt',
+      title:'قياس جهد الخلية الجلفانية',
+      question:'كيف يمكن قياس جهد الخلية الجلفانية الناتج عن فلزّين مختلفين؟',
+      explain:'جهد الخلية الجلفانية ينتج من الفرق بين ميل كل فلزّ لفقد إلكتروناته (جهد اختزاله القياسي). الزنك أنشط من النحاس، أي أن ميله للتأكسد وفقد الإلكترونات أكبر، فهو يشكّل المصعد (الأنود) حيث يتأكسد Zn إلى Zn²⁺، بينما تنتقل الإلكترونات المتحررة عبر الدائرة الخارجية لتختزل أيونات Cu²⁺ عند المهبط (الكاثود) إلى نحاس فلزّي. جهد الخلية الكلي يساوي تقريباً الفرق بين جهدَي الاختزال القياسيين للفلزّين، فكلما اتسعت الفجوة بينهما في سلسلة النشاطية (كما بين المغنيسيوم والنحاس مثلاً) كان جهد الخلية الناتج أكبر، بينما فلزّان متقاربان في النشاط يعطيان جهداً أضعف.',
+      steps:[
+        'اسكبي محلول كبريتات النحاس CuSO₄ في كأس زجاجي.',
+        'ضعي شريط الزنك في المحلول، وراقبي ما يحدث تدريجياً على سطحه ولون المحلول حوله.',
+        'في التجربة الحقيقية، تُغمر أقطاب الزنك والنحاس في محلولي ملحيهما المنفصلين، وتُوصلان بقنطرة ملحية وبفولتميتر لقياس فرق الجهد بينهما مباشرة.',
+        'سجّلي قراءة الفولتميتر (الجهد بالفولت) بين قطبي الزنك والنحاس.',
+        'كرّري القياس مع أزواج فلزّية أخرى (كالمغنيسيوم والنحاس، أو الألومنيوم والنحاس) وقارني بين قيم الجهد الناتجة.',
+        'حدّدي أي القطبين يمثّل المصعد (الأنود) الذي تحدث عنده الأكسدة، وأيهما المهبط (الكاثود) الذي يحدث عنده الاختزال.'
+      ],
+      setup:{equip:'beaker', chems:['cuso4','zn']},
+      quiz:[
+        {q:'الفلزّ الذي يتأكسد في الخلية الجلفانية يوجد عند:', opts:['المهبط (الكاثود)','المصعد (الأنود)','القنطرة الملحية فقط','خارج الدائرة'], correct:1, explain:'الأكسدة (فقد الإلكترونات) تحدث دائماً عند المصعد (الأنود).'},
+        {q:'كلما زاد الفرق في النشاط الكيميائي بين الفلزّين المكوّنين للخلية الجلفانية:', opts:['زاد جهد الخلية الناتج','قلّ جهد الخلية إلى الصفر','لا علاقة بين النشاط والجهد','ينعكس اتجاه التفاعل دائماً'], correct:0, explain:'كلما زاد الفرق بين جهدي الاختزال القياسيين للفلزّين، زاد جهد الخلية الجلفانية الناتج عن اقترانهما.'}
+      ]},
+    { id:'ex12', cat:'electrochem', icon:'#ic-bolt',
+      title:'عمل بطارية من حبة ليمون',
+      question:'كيف يمكن الحصول على تيار كهربائي بسيط من حبة ليمون؟',
+      explain:'بطارية الليمون هي خلية جلفانية بسيطة تتوفر فيها العناصر الثلاثة الأساسية لأي خلية كهروكيميائية: قطبان فلزّيان مختلفا النشاط (الزنك والنحاس)، ومحلول إلكتروليتي يفصل بينهما ويسمح بحركة الأيونات (حمض الستريك الموجود في عصير الليمون). الزنك الأنشط يتأكسد عند أحد القطبين محرراً إلكترونات تسري عبر السلك الخارجي نحو قطب النحاس، بينما يكتمل المسار داخل حبة الليمون عبر حركة الأيونات في السائل الحمضي. هذا التدفق المستمر للإلكترونات عبر السلك هو التيار الكهربائي الذي يضيء المصباح. وبما أن اكتمال الدائرة يتطلّب وجود القطبين معاً والإلكتروليت بينهما، فإن نزع أحد القطبين يقطع مسار الإلكترونات فوراً ويُسقط الجهد إلى الصفر.',
+      steps:[
+        'اغرزي شريحتين معدنيتين مختلفتين (كالزنك والنحاس) في حبة ليمون، بحيث لا تتلامسان داخل الثمرة.',
+        'اتركي مسافة صغيرة (حوالي 2 سم) بين الشريحتين.',
+        'صلي الشريحتين بجهاز قياس فرق الجهد (الفولتميتر) أو بمصباح LED صغير عبر أسلاك توصيل.',
+        'سجّلي قراءة الجهد الناتج، أو لاحظي إن كان المصباح يضيء.',
+        'انزعي إحدى الشريحتين المعدنيتين، ولاحظي ماذا يحدث لقراءة الجهد أو لإضاءة المصباح.',
+        'اربطي دور عصير الليمون الحمضي بدوره كمحلول إلكتروليتي يكمل الدائرة الكهروكيميائية بين الشريحتين.'
+      ],
+      setup:{equip:'beaker', chems:['lemon','zn']},
+      quiz:[
+        {q:'في بطارية الليمون، يلعب عصير الليمون دور:', opts:['المحلول الإلكتروليتي الذي يسمح بحركة الأيونات','عازل كهربائي كامل','وقود يُحرق','مبرّد فقط'], correct:0, explain:'حمض الليمون الضعيف يوفّر أيونات حرّة تكمل الدائرة الكهروكيميائية بين القطبين كما تفعل القنطرة الملحية.'},
+        {q:'عند نزع إحدى الشريحتين المعدنيتين من حبة الليمون:', opts:['تنقطع الدائرة الكهربائية ويهبط الجهد إلى الصفر','يزداد الجهد أكثر','لا يتغيّر شيء','يتحوّل التيار إلى تيار متردد'], correct:0, explain:'إزالة أحد القطبين تقطع الدائرة الكهروكيميائية، فلا يكتمل مسار الإلكترونات ويهبط الجهد المقاس إلى الصفر.'}
+      ]}
+  ];
+  var EXP_BY_ID = {}; EXPERIMENTS.forEach(function(x){EXP_BY_ID[x.id]=x;});
+
+  /* ================= quiz progress (persisted) ================= */
+  var quizState = {};
+  try{ var qs = localStorage.getItem('lab-quiz-progress'); if(qs) quizState = JSON.parse(qs); }catch(e){}
+  function saveQuizState(){ try{ localStorage.setItem('lab-quiz-progress', JSON.stringify(quizState)); }catch(e){} }
+  function expDoneCount(){ return EXPERIMENTS.filter(function(x){ return quizState[x.id] && quizState[x.id].done; }).length; }
+
+  /* ================= local reaction counter (per-device only, not shared across visitors) ================= */
+  function lsGetNum(key){ try{ var v = parseInt(localStorage.getItem(key),10); return isNaN(v)?0:v; }catch(e){ return 0; } }
+  function lsSetNum(key, val){ try{ localStorage.setItem(key, String(val)); }catch(e){} }
+  var localReactionCount = lsGetNum('lab-reaction-count');
+  function bumpLocalReactionCount(){
+    localReactionCount += 1;
+    lsSetNum('lab-reaction-count', localReactionCount);
+    var el = document.getElementById('statReactions');
+    if(el) el.textContent = localReactionCount;
+  }
+
+  /* ================= vessel state ================= */
+  var vessels = {};
+  var vCounter = 0;
+  var balances = {};
+  var balCounter = 0;
+  var selectedId = null;
+  var editingVolumeId = null; // id of the vessel whose volume input is open right now (on the bench badge or in the details panel) — guards both from being redrawn out from under it (e.g. by the temperature-drift interval)
+  function volLabel(v){ return v.liquidVolume+' / '+EQ_BY_ID[v.type].max+' مل'; }
+  var logEntries = [];
+  var activeChemTab = 'acid_base';
+  var undoStack = [];
+  var redoStack = [];
+
+  function cloneVesselsState(){
+    var out = {};
+    Object.keys(vessels).forEach(function(id){
+      var v = vessels[id], copy = {};
+      for(var k in v){ copy[k] = v[k]; }
+      copy.solids = v.solids.slice();
+      copy.contentsOrder = new Set(v.contentsOrder);
+      out[id] = copy;
+    });
+    return out;
+  }
+  function cloneBalancesState(){
+    var out = {};
+    Object.keys(balances).forEach(function(id){
+      var b = balances[id], copy = {};
+      for(var k in b){ copy[k] = b[k]; }
+      copy.items = b.items.slice();
+      out[id] = copy;
+    });
+    return out;
+  }
+  function currentSnapshot(){
+    return { vessels: cloneVesselsState(), balances: cloneBalancesState(), log: logEntries.slice(), vCounter: vCounter, balCounter: balCounter, selectedId: selectedId };
+  }
+  function pushUndo(){
+    undoStack.push(currentSnapshot());
+    if(undoStack.length>30) undoStack.shift();
+    redoStack.length = 0;
+    updateHistoryButtons();
+  }
+  function applySnapshot(snap){
+    Object.keys(vessels).forEach(function(id){ var node = document.getElementById(id); if(node) node.remove(); });
+    Object.keys(balances).forEach(function(id){ var node = document.getElementById(id); if(node) node.remove(); });
+    vessels = snap.vessels;
+    balances = snap.balances || {};
+    vCounter = snap.vCounter;
+    balCounter = snap.balCounter || balCounter;
+    logEntries = snap.log;
+    selectedId = snap.selectedId;
+    Object.keys(vessels).forEach(function(id){ createVesselEl(vessels[id]); });
+    Object.keys(vessels).forEach(function(id){ renderVessel(vessels[id]); });
+    Object.keys(balances).forEach(function(id){ createBalanceEl(balances[id]); renderBalance(balances[id]); });
+    renderLog();
+    renderDetail();
+    var hint = document.getElementById('benchHint');
+    if(hint) hint.style.display = (Object.keys(vessels).length || Object.keys(balances).length) ? 'none':'flex';
+    updateHistoryButtons();
+  }
+  function undoLast(){
+    if(!undoStack.length){ pushLog('لا يوجد إجراء سابق للتراجع عنه.'); return; }
+    redoStack.push(currentSnapshot());
+    var snap = undoStack.pop();
+    applySnapshot(snap);
+  }
+  function redoLast(){
+    if(!redoStack.length){ pushLog('لا يوجد إجراء تالٍ للتقدّم إليه.'); return; }
+    undoStack.push(currentSnapshot());
+    var snap = redoStack.pop();
+    applySnapshot(snap);
+  }
+  function updateHistoryButtons(){
+    var u = document.getElementById('undoBtn'), r = document.getElementById('redoBtn');
+    if(u) u.disabled = !undoStack.length;
+    if(r) r.disabled = !redoStack.length;
+  }
+
+  function pushLog(text){
+    logEntries.unshift({t:text, time:new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})});
+    if(logEntries.length>40) logEntries.length = 40;
+    renderLog();
+  }
+  function renderLog(){
+    var list = document.getElementById('logList');
+    if(!list) return;
+    if(!logEntries.length){ list.innerHTML = '<div class="log-empty">لم يبدأ أي نشاط بعد</div>'; return; }
+    list.innerHTML = logEntries.map(function(e){ return '<div class="log-item"><span class="dot"></span><div><b>'+e.time+'</b> — '+e.t+'</div></div>'; }).join('');
+  }
+  function vesselLabel(v){ return EQ_BY_ID[v.type].name + ' #' + v.num; }
+
+  /* ================= vessel visuals ================= */
+  var SHAPES = {
+    beaker:   { outline:'M22,16 L22,84 Q22,90 28,90 L72,90 Q78,90 78,84 L78,16', top:16, bottom:88 },
+    tube:     { outline:'M37,8 L37,74 Q37,90 50,90 Q63,90 63,74 L63,8', top:8, bottom:88 },
+    flask:    { outline:'M41,8 L41,32 L17,80 Q13,90 24,90 L76,90 Q87,90 83,80 L59,32 L59,8', top:8, bottom:88 },
+    cylinder: { outline:'M40,6 L40,80 Q40,90 50,90 Q60,90 60,80 L60,6', top:6, bottom:88, ticks:true }
+  };
+
+  function buildVesselSVG(v){
+    var shape = SHAPES[EQ_BY_ID[v.type].shape];
+    var svg = el('svg',{viewBox:'0 0 100 100', class:'vgraphic'});
+    var clipId = 'clip'+v.id;
+    var defs = el('defs',{},svg);
+    var clipPath = el('clipPath',{id:clipId},defs);
+    el('path',{d:shape.outline+' Z'},clipPath);
+    el('path',{d:shape.outline+' Z', fill:'var(--glass-fill)'},svg);
+
+    var pct = clamp01(v.liquidVolume / EQ_BY_ID[v.type].max);
+    var liqTop = shape.bottom - (shape.bottom-shape.top-4)*pct;
+    var liquidColor = v.color || '#EAF3F5';
+
+    if(v.liquidVolume>0){
+      el('rect',{x:0,y:liqTop,width:100,height:100-liqTop,fill:liquidColor,'clip-path':'url(#'+clipId+')',class:'liquid-fill', opacity: v.opacity||0.85},svg);
+    }
+    if(v.solids.length){
+      v.solids.slice(0,6).forEach(function(sid,i){
+        var chem = CHEM_BY_ID[sid];
+        var cx = 32 + (i%6)*7;
+        var fillColor = chem.color||'#8a8a8a';
+        if(sid==='ag_tarnished' && v.tarnishCleaned) fillColor = '#E8E8E8';
+        el('circle',{cx:cx, cy:shape.bottom-6, r:3.4, fill:fillColor, stroke:'var(--surface)','stroke-width':.6, class:'precipitate show'},svg);
+      });
+    }
+    if(v.precipitateColor){
+      var precipN = 4 + (v.intensity||2)*3;
+      for(var i=0;i<precipN;i++){
+        el('circle',{cx: 28+ (i*6)%46, cy: shape.bottom-4-((i*3)%10), r:2.1, fill:v.precipitateColor, class:'precipitate'+(v.precipitateOn?' show':'')},svg);
+      }
+    }
+    el('path',{d:shape.outline, fill:'none', stroke:'var(--glass-stroke)','stroke-width':2.4, 'stroke-linejoin':'round','stroke-linecap':'round'},svg);
+    el('line',{x1:37, x2:63, y1:shape.top, y2:shape.top, stroke:'var(--glass-stroke)','stroke-width':2.4,'stroke-linecap':'round'},svg);
+    if(shape.ticks){
+      for(var ti=0; ti<5; ti++){
+        var ty = shape.top + 8 + ti*((shape.bottom-shape.top-8)/5);
+        el('line',{x1:60, x2:(ti%2===0?67:64), y1:ty, y2:ty, stroke:'var(--glass-stroke)','stroke-width':1.1, opacity:.6},svg);
+      }
+    }
+    return svg;
+  }
+
+  function renderVessel(v){
+    var elDiv = document.getElementById(v.id);
+    if(!elDiv) return;
+    var glasswrap = elDiv.querySelector('.glasswrap');
+    glasswrap.innerHTML = '';
+    glasswrap.appendChild(buildVesselSVG(v));
+    var frostEl = document.createElement('div'); frostEl.className='frost';
+    glasswrap.appendChild(frostEl);
+    // passive warmth hint — a strong, obvious color cue so students can tell hot/cold by eye alone, before measuring exactly
+    var warmPct = clamp01((v.temp-25)/22), coldPct = clamp01((16-v.temp)/18);
+    var hintEl = document.createElement('div'); hintEl.className='warmth-hint';
+    if(warmPct >= coldPct && warmPct>0.02){
+      hintEl.style.background = 'radial-gradient(circle at 50% 70%, #FF5A2E, transparent 78%)';
+      hintEl.style.opacity = (0.18 + warmPct*0.72).toFixed(2);
+    } else if(coldPct>0.02){
+      hintEl.style.background = 'radial-gradient(circle at 50% 70%, #2E9CFF, transparent 78%)';
+      hintEl.style.opacity = (0.18 + coldPct*0.72).toFixed(2);
+    } else {
+      hintEl.style.opacity = 0;
+    }
+    glasswrap.appendChild(hintEl);
+    elDiv.classList.toggle('vividly-hot', warmPct>=coldPct && v.temp>=42);
+    elDiv.classList.toggle('vividly-cold', coldPct>warmPct && v.temp<=10);
+    if(v.bubbling){
+      var bCount = 3 + (v.intensity||1)*2;
+      var bSpeedMul = v.intensity>=3 ? 0.55 : (v.intensity===2 ? 0.75 : 1);
+      for(var i=0;i<bCount;i++){
+        var b = document.createElement('div'); b.className='bubble';
+        var size = (v.intensity>=3? 5:4)+Math.random()*4;
+        b.style.width = size+'px'; b.style.height=size+'px';
+        b.style.left = (28+ i*(46/bCount) + Math.random()*6)+'px';
+        b.style.animationDelay = (i*0.28*bSpeedMul)+'s';
+        b.style.animationDuration = (1.1*bSpeedMul)+'s';
+        glasswrap.appendChild(b);
+      }
+    }
+    var steamEl = elDiv.querySelector('.steam'); steamEl.innerHTML = '';
+    if(v.boiling || v.steaming){
+      var wCount = v.boiling ? 5 : 3;
+      for(var si=0; si<wCount; si++){
+        var w = document.createElement('div'); w.className = 'wisp';
+        w.style.left = (14 + si*(34/wCount) + Math.random()*6)+'px';
+        w.style.animationDelay = (si*0.35)+'s';
+        w.style.animationDuration = (v.boiling ? 1.7 : 2.4)+'s';
+        steamEl.appendChild(w);
+      }
+    }
+    elDiv.classList.toggle('bubbling', !!v.bubbling);
+    elDiv.classList.toggle('heated', !!v.heated);
+    elDiv.classList.toggle('iced', !!v.iced);
+    elDiv.classList.toggle('boiling', !!v.boiling);
+    elDiv.classList.toggle('steaming', !!(v.boiling||v.steaming));
+    elDiv.classList.toggle('frosty', !!v.frosty);
+    elDiv.classList.toggle('stirred', !!v.stirred);
+    elDiv.classList.toggle('selected', selectedId===v.id);
+    elDiv.classList.toggle('intense', (v.intensity||0)>=3);
+    var flameEl = elDiv.querySelector('.flame');
+    if(flameEl) flameEl.style.setProperty('--flame-scale', (0.65 + (v.heatLevel||2)*0.28));
+    var iceEl = elDiv.querySelector('.ice-ind');
+    if(iceEl) iceEl.style.setProperty('--ice-scale', (0.65 + (v.iceLevel||2)*0.28));
+    updateSliderVisual(elDiv, 'heat-slider', v.heatLevel);
+    updateSliderVisual(elDiv, 'ice-slider', v.iceLevel);
+
+    var badges = elDiv.querySelector('.badges');
+    var html = '';
+    if(v.showTemp){
+      var cls = v.temp>=45?'temp-hot':(v.temp<=10?'temp-cold':'');
+      html += '<span class="badge '+cls+'">'+Math.round(v.temp)+'°س</span>';
+    }
+    if(v.boiling) html += '<span class="badge temp-hot">🔥 يغلي</span>';
+    else if(v.frosty) html += '<span class="badge temp-cold">❄️ شبه متجمد</span>';
+    if(v.stirred) html += '<span class="badge">🌀 يُحرَّك</span>';
+    badges.innerHTML = html;
+
+    var volBadge = elDiv.querySelector('.vol-badge');
+    if(volBadge && editingVolumeId!==v.id){ volBadge.textContent = volLabel(v); }
+
+    var cloudBtn = elDiv.querySelector('.mol-cloud-btn');
+    if(cloudBtn){
+      var structIds = vesselStructureChemIds(v);
+      cloudBtn.hidden = !structIds.length;
+      if(!structIds.length && moleculeCloudOpenId===v.id) closeMoleculeCloud();
+      else if(moleculeCloudOpenId===v.id){
+        var openPanel = document.querySelector('.mol-cloud-panel');
+        if(openPanel){ openPanel.innerHTML = buildMoleculeCloudPanelHTML(v.id); wireMoleculeCloudPanel(v.id, openPanel); }
+      }
+    }
+    if(selectedId===v.id) renderDetail();
+  }
+
+  function moveVesselTo(v, x, y){
+    var bench = document.getElementById('bench');
+    var r = bench.getBoundingClientRect();
+    var relX = Math.max(60, Math.min(r.width-60, x));
+    var relY = Math.max(70, Math.min(r.height-40, y));
+    v.x = relX; v.y = relY;
+    var d = document.getElementById(v.id);
+    d.style.left = relX+'px'; d.style.top = relY+'px';
+  }
+
+  function createVesselEl(v){
+    var d = document.createElement('div');
+    d.className = 'vessel'; d.id = v.id;
+    d.innerHTML =
+      '<div class="steam"></div>'+
+      '<div class="glasswrap"></div>'+
+      '<div class="label">'+vesselLabel(v)+'</div>'+
+      '<div class="vol-badge vol-editable" title="اضغطي لتعديل الحجم مباشرة">'+volLabel(v)+'</div>'+
+      '<div class="badges"></div>'+
+      '<div class="remove-x" title="إزالة الإناء"><svg><use href="#ic-x"/></svg></div>'+
+      '<svg class="flame" viewBox="0 0 24 24"><use href="#ic-flame" fill="var(--amber)" stroke="var(--amber)"/></svg>'+
+      '<svg class="ice-ind" viewBox="0 0 24 24"><use href="#ic-snow"/></svg>'+
+      '<svg class="stir-ind" viewBox="0 0 24 24"><use href="#ic-stir"/></svg>'+
+      '<div class="heat-slider" title="اسحبي إلى أعلى/أسفل لتغيير شدة التسخين"><span class="slider-cap">🔥</span><div class="slider-track"><div class="slider-fill"></div><div class="slider-thumb"></div></div></div>'+
+      '<div class="ice-slider" title="اسحبي إلى أعلى/أسفل لتغيير شدة التبريد"><span class="slider-cap">❄</span><div class="slider-track"><div class="slider-fill"></div><div class="slider-thumb"></div></div></div>'+
+      '<button type="button" class="mol-cloud-btn" hidden title="✨ اضغطي لرؤية شكل الجزيئات الحقيقي متحركاً وثلاثي الأبعاد!"><span>⚛️</span></button>';
+    document.getElementById('bench').appendChild(d);
+    d.style.left = v.x+'px'; d.style.top = v.y+'px';
+    d.addEventListener('click', function(ev){
+      if(ev.target.closest('.remove-x')){ removeVessel(v.id); return; }
+      if(ev.target.closest('.mol-cloud-btn')){ toggleMoleculeCloud(v.id); return; }
+      if(ev.target.closest('.vol-badge')){
+        var badgeEl = d.querySelector('.vol-badge');
+        if(selectedId!==v.id) selectVessel(v.id);
+        startVolumeEdit(v.id, badgeEl);
+        return;
+      }
+      selectVessel(v.id);
+    });
+    makeVesselDraggable(d, v);
+    makeIntensitySlider(d.querySelector('.heat-slider .slider-track'), function(){ return v.heatLevel||2; }, function(lvl){ setHeatLevel(v.id, lvl); });
+    makeIntensitySlider(d.querySelector('.ice-slider .slider-track'), function(){ return v.iceLevel||2; }, function(lvl){ setIceLevel(v.id, lvl); });
+    return d;
+  }
+
+  /* ================= "molecule cloud" — a discoverable, toggleable floating bubble on the bench that shows an
+     animated pseudo-3D view of a vessel's real particle structure (replaces the old click-a-chip-to-open-a-modal flow) ================= */
+  var moleculeCloudOpenId = null;
+  var moleculeCloudActiveChem = {};
+  function vesselStructureChemIds(v){
+    return Array.from(v.contentsOrder).filter(function(id){ return !!STRUCTURES[id]; });
+  }
+  function closeMoleculeCloud(){
+    if(!moleculeCloudOpenId) return;
+    var btn = document.querySelector('#'+moleculeCloudOpenId+' .mol-cloud-btn');
+    if(btn) btn.classList.remove('active');
+    var panel = document.querySelector('.mol-cloud-panel');
+    if(panel) panel.remove();
+    moleculeCloudOpenId = null;
+  }
+  function buildMoleculeCloudPanelHTML(vesselId){
+    var v = vessels[vesselId]; if(!v) return '';
+    var ids = vesselStructureChemIds(v);
+    if(!ids.length) return '';
+    var active = moleculeCloudActiveChem[vesselId];
+    if(ids.indexOf(active)===-1) active = ids[0];
+    moleculeCloudActiveChem[vesselId] = active;
+    var tabsHtml = ids.length>1 ? '<div class="mcp-tabs">'+ids.map(function(id){
+      return '<button type="button" data-chem="'+id+'" class="'+(id===active?'active':'')+'">'+CHEM_BY_ID[id].name+'</button>';
+    }).join('')+'</div>' : '';
+    return '<button type="button" class="mcp-close" title="إغلاق"><svg><use href="#ic-x"/></svg></button>'+
+      tabsHtml + moleculeCloudContent(active);
+  }
+  function positionMoleculeCloudPanel(btn, panel){
+    var r = btn.getBoundingClientRect();
+    var pw = panel.offsetWidth || 230, ph = panel.offsetHeight || 220;
+    var left = r.left + r.width/2 - pw/2;
+    left = Math.max(8, Math.min(window.innerWidth-pw-8, left));
+    var top = r.top - ph - 14;
+    if(top < 8) top = r.bottom + 14;
+    panel.style.left = left+'px';
+    panel.style.top = top+'px';
+  }
+  function wireMoleculeCloudPanel(vesselId, panel){
+    var closeBtn = panel.querySelector('.mcp-close');
+    if(closeBtn) closeBtn.addEventListener('click', function(ev){ ev.stopPropagation(); closeMoleculeCloud(); });
+    panel.querySelectorAll('.mcp-tabs button').forEach(function(b){
+      b.addEventListener('click', function(ev){
+        ev.stopPropagation(); // rebuilding panel.innerHTML mid-bubble would otherwise orphan the event target
+        // before it reaches the document-level outside-click listener, making that listener think the click
+        // landed outside the panel and close it right after we just rebuilt it
+        moleculeCloudActiveChem[vesselId] = b.getAttribute('data-chem');
+        panel.innerHTML = buildMoleculeCloudPanelHTML(vesselId);
+        wireMoleculeCloudPanel(vesselId, panel);
+        var btn = document.querySelector('#'+vesselId+' .mol-cloud-btn');
+        if(btn) positionMoleculeCloudPanel(btn, panel);
+      });
+    });
+  }
+  function openMoleculeCloud(vesselId){
+    closeMoleculeCloud();
+    var v = vessels[vesselId]; if(!v) return;
+    var ids = vesselStructureChemIds(v); if(!ids.length) return;
+    var btn = document.querySelector('#'+vesselId+' .mol-cloud-btn'); if(!btn) return;
+    var panel = document.createElement('div'); panel.className='mol-cloud-panel'; panel.setAttribute('dir','rtl');
+    panel.innerHTML = buildMoleculeCloudPanelHTML(vesselId);
+    document.body.appendChild(panel);
+    positionMoleculeCloudPanel(btn, panel);
+    wireMoleculeCloudPanel(vesselId, panel);
+    btn.classList.add('active');
+    moleculeCloudOpenId = vesselId;
+  }
+  function toggleMoleculeCloud(vesselId){
+    if(moleculeCloudOpenId === vesselId){ closeMoleculeCloud(); return; }
+    openMoleculeCloud(vesselId);
+  }
+  document.addEventListener('click', function(ev){
+    if(!moleculeCloudOpenId) return;
+    if(ev.target.closest('.mol-cloud-panel') || ev.target.closest('.mol-cloud-btn')) return;
+    closeMoleculeCloud();
+  });
+
+  function makeIntensitySlider(trackEl, getLevel, setLevel){
+    if(!trackEl) return;
+    trackEl.addEventListener('pointerdown', function(evt){
+      evt.stopPropagation(); evt.preventDefault();
+      var rect = trackEl.getBoundingClientRect();
+      function update(clientY){
+        var rel = 1 - clamp01((clientY - rect.top) / rect.height);
+        var lvl = Math.round(1 + rel*2);
+        lvl = Math.max(1, Math.min(3, lvl));
+        if(lvl !== getLevel()) setLevel(lvl);
+      }
+      update(evt.clientY);
+      function onMove(e){ update(e.clientY); }
+      function onUp(){ document.removeEventListener('pointermove', onMove); document.removeEventListener('pointerup', onUp); }
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+    });
+  }
+  function updateSliderVisual(elDiv, cls, level){
+    var wrap = elDiv.querySelector('.'+cls);
+    if(!wrap) return;
+    var fill = wrap.querySelector('.slider-fill'), thumb = wrap.querySelector('.slider-thumb');
+    var pct = (Math.max(1, Math.min(3, level||2)) - 1) / 2;
+    if(fill) fill.style.height = (pct*100)+'%';
+    if(thumb) thumb.style.bottom = (pct*100)+'%';
+  }
+
+  function selectVessel(id){ selectedId = id; Object.keys(vessels).forEach(function(k){renderVessel(vessels[k]);}); renderDetail(); }
+  var REACTION_META = {
+    gas:         {icon:'#ic-bubbles', label:'انطلاق غاز'},
+    precipitate: {icon:'#ic-precip',  label:'تكوّن راسب'},
+    colorchange: {icon:'#ic-drop',    label:'تغيّر اللون'},
+    heat:        {icon:'#ic-flame',   label:'يحتاج تسخين'},
+    thermal:     {icon:'#ic-thermo',  label:'تغيّر في درجة الحرارة'},
+    none:        {icon:'#ic-info',    label:'تفاعل ضعيف جداً'}
+  };
+  var INTENSITY_LABEL = {1:'خفيف', 2:'متوسط', 3:'قوي'};
+  function renderDetail(){
+    if(editingVolumeId && editingVolumeId===selectedId) return; // don't yank the panel out from under an open volume edit (e.g. periodic temperature updates)
+    var body = document.getElementById('detailBody');
+    if(!body) return;
+    var v = vessels[selectedId];
+    if(!v){ body.innerHTML = '<div class="detail-empty">اضغطي على أي إناء موجود على المنضدة لعرض تفاصيله هنا</div>'; return; }
+    var contentNames = Array.from(v.contentsOrder).map(function(id){ return CHEM_BY_ID[id].name; });
+
+    var alertHtml = '';
+    if(v.note){
+      var meta = REACTION_META[v.reactionType] || REACTION_META.none;
+      var chip = v.intensity ? '<span class="ra-chip i'+v.intensity+'">'+INTENSITY_LABEL[v.intensity]+'</span>' : '';
+      alertHtml = '<div class="reaction-alert">'+
+          '<div class="ra-head"><div class="ra-icon"><svg><use href="'+meta.icon+'"/></svg></div><div class="ra-label">'+meta.label+'</div>'+chip+'</div>'+
+          (v.eq? '<span class="ra-caption">معادلة التفاعل</span><div class="eq-line">'+v.eq+'</div>' : '')+
+          '<span class="ra-caption">التفسير العلمي</span><p>'+v.note+'</p>'+
+        '</div>';
+    }
+
+    var levelHtml = '';
+    if(v.heated){
+      levelHtml += '<div class="level-select"><span class="lbl">مستوى التسخين</span><div class="lvl-row">'+
+        [1,2,3].map(function(n){ return '<button class="'+(v.heatLevel===n?'active':'')+'" data-heat-lvl="'+n+'"><svg><use href="#ic-flame"/></svg>'+(n===1?'منخفض':n===2?'متوسط':'عالٍ')+'</button>'; }).join('')+
+      '</div></div>';
+    }
+    if(v.iced){
+      levelHtml += '<div class="level-select"><span class="lbl">مستوى التبريد</span><div class="lvl-row">'+
+        [1,2,3].map(function(n){ return '<button class="'+(v.iceLevel===n?'active':'')+'" data-ice-lvl="'+n+'"><svg><use href="#ic-snow"/></svg>'+(n===1?'خفيف':n===2?'متوسط':'شديد')+'</button>'; }).join('')+
+      '</div></div>';
+    }
+
+    body.innerHTML =
+      '<div class="detail-rows">'+
+        '<div class="r"><span>الإناء</span><b>'+vesselLabel(v)+'</b></div>'+
+        '<div class="r"><span>الحجم الحالي</span><b class="num vol-editable" id="volReadout" title="اضغطي لكتابة الحجم الذي تريدينه بالمل">'+volLabel(v)+'</b></div>'+
+        '<div class="r"><span>درجة الحرارة</span><b class="num">'+(v.showTemp? Math.round(v.temp)+'°س' : 'اسحبي ميزان الحرارة لقياسها')+'</b></div>'+
+        (v.solids.length? '<div class="r"><span>كتلة المواد الصلبة</span><b class="num">'+(v.showMass? massOf(v)+' g' : 'اسحبي الميزان الرقمي لقياسها')+'</b></div>' : '')+
+      '</div>'+
+      (contentNames.length? '<div class="content-chips">'+Array.from(v.contentsOrder).map(function(id){ return '<span class="chip">'+CHEM_BY_ID[id].name+'</span>'; }).join('')+'</div>' : '<p style="margin-block-start:8px;font-size:.83rem">إناء فارغ — اسحبي مادة من الرف واسكبيها هنا</p>')+
+      alertHtml + levelHtml +
+      '<div class="detail-actions">'+
+        '<button class="btn" id="btnDup" title="تكرار الإناء بنفس محتوياته">نسخ الإناء<svg><use href="#ic-copy"/></svg></button>'+
+        '<button class="btn" id="btnEmpty">إفراغ الإناء<svg><use href="#ic-refresh"/></svg></button>'+
+        '<button class="btn danger" id="btnRemove">إزالة من المنضدة<svg><use href="#ic-x"/></svg></button>'+
+      '</div>';
+    document.getElementById('btnDup').onclick = function(){ duplicateVessel(v.id); };
+    document.getElementById('btnEmpty').onclick = function(){ emptyVessel(v.id); };
+    document.getElementById('btnRemove').onclick = function(){ removeVessel(v.id); };
+    var volEl = document.getElementById('volReadout');
+    if(volEl) volEl.addEventListener('click', function(){ startVolumeEdit(v.id, volEl); });
+    body.querySelectorAll('[data-heat-lvl]').forEach(function(b){
+      b.addEventListener('click', function(){ setHeatLevel(v.id, parseInt(b.getAttribute('data-heat-lvl'),10)); });
+    });
+    body.querySelectorAll('[data-ice-lvl]').forEach(function(b){
+      b.addEventListener('click', function(){ setIceLevel(v.id, parseInt(b.getAttribute('data-ice-lvl'),10)); });
+    });
+  }
+
+  // shared volume editor — usable from the on-bench badge on the vessel itself, or from the details panel's readout.
+  // `el` is whichever of the two elements was actually clicked; the other stays frozen at its old value (guarded by
+  // editingVolumeId) until commit, then both refresh together.
+  function startVolumeEdit(id, el){
+    var v = vessels[id]; if(!v) return;
+    if(!el || el.querySelector('input')) return;
+    editingVolumeId = id;
+    var max = EQ_BY_ID[v.type].max;
+    el.innerHTML = '<input type="number" step="1" min="0" max="'+max+'" class="vol-input">';
+    var input = el.querySelector('input');
+    input.value = v.liquidVolume;
+    var done = false;
+    function finish(){
+      editingVolumeId = null;
+      renderVessel(v);
+      if(selectedId===v.id) renderDetail();
+    }
+    function commit(){
+      if(done) return; done = true;
+      var val = parseFloat(input.value);
+      if(isNaN(val) || val<0) val = 0;
+      if(val>max) val = max;
+      val = Math.round(val*10)/10;
+      if(val !== v.liquidVolume){
+        pushUndo();
+        v.liquidVolume = val;
+        pushLog('ضُبط حجم السائل يدوياً في '+vesselLabel(v)+' إلى '+val+' مل.');
+        recompute(v);
+      }
+      finish();
+    }
+    input.addEventListener('keydown', function(ev){
+      if(ev.key==='Enter'){ ev.preventDefault(); commit(); }
+      else if(ev.key==='Escape'){ done = true; finish(); }
+    });
+    input.addEventListener('blur', commit);
+    input.addEventListener('click', function(ev){ ev.stopPropagation(); });
+    input.focus();
+    input.select();
+  }
+
+  function emptyVessel(id){
+    var v = vessels[id]; if(!v) return;
+    pushUndo();
+    v.liquidVolume=0; v.solids=[]; v.contentsOrder=new Set(); v.color=null; v.bubbling=false;
+    v.precipitateColor=null; v.precipitateOn=false; v.note=''; v.acidUnits=0; v.baseUnits=0; v.tarnishCleaned=false; v.opacity=0.85;
+    v.reactionType=null; v.intensity=0; v.boiling=false; v.steaming=false; v.frosty=false;
+    pushLog('أُفرغ '+vesselLabel(v)+'.');
+    renderVessel(v); renderDetail();
+  }
+  function transferVessel(vSrc, vDst){
+    if(vSrc.liquidVolume<=0 && !vSrc.solids.length){
+      pushLog('⚠️ '+vesselLabel(vSrc)+' فارغ — لا يوجد ما تسكبينه منه.');
+      flashVessel(vSrc.id);
+      return;
+    }
+    var room = EQ_BY_ID[vDst.type].max - vDst.liquidVolume;
+    if(vSrc.liquidVolume > room){
+      pushLog('⚠️ '+vesselLabel(vDst)+' لا يتّسع لكل محتوى '+vesselLabel(vSrc)+' ('+vSrc.liquidVolume+'mL) — أفرغيه أو استخدمي إناءً أكبر.');
+      flashVessel(vDst.id);
+      return;
+    }
+    if(vSrc.solids.length && (vDst.solids.length + vSrc.solids.length) > 6){
+      pushLog('⚠️ '+vesselLabel(vDst)+' لا يتّسع لكل المواد الصلبة في '+vesselLabel(vSrc)+' — أفرغيه أولاً.');
+      flashVessel(vDst.id);
+      return;
+    }
+    pushUndo();
+    var movedVol = vSrc.liquidVolume;
+    vDst.liquidVolume += movedVol;
+    vSrc.contentsOrder.forEach(function(cid){ vDst.contentsOrder.add(cid); });
+    vSrc.solids.forEach(function(sid){ vDst.solids.push(sid); });
+    vDst.acidUnits += vSrc.acidUnits;
+    vDst.baseUnits += vSrc.baseUnits;
+    pushLog('سُكب محتوى '+vesselLabel(vSrc)+' بالكامل ('+movedVol+'mL) داخل '+vesselLabel(vDst)+'.');
+    vSrc.liquidVolume=0; vSrc.solids=[]; vSrc.contentsOrder=new Set(); vSrc.color=null; vSrc.bubbling=false;
+    vSrc.precipitateColor=null; vSrc.precipitateOn=false; vSrc.note=''; vSrc.acidUnits=0; vSrc.baseUnits=0; vSrc.tarnishCleaned=false; vSrc.opacity=0.85;
+    vSrc.reactionType=null; vSrc.intensity=0; vSrc.boiling=false; vSrc.steaming=false; vSrc.frosty=false;
+    recompute(vSrc); recompute(vDst);
+    renderVessel(vSrc); renderVessel(vDst);
+    if(selectedId===vSrc.id || selectedId===vDst.id) renderDetail();
+  }
+  function removeVessel(id){
+    var v = vessels[id]; if(!v) return;
+    pushUndo();
+    if(moleculeCloudOpenId===id) closeMoleculeCloud();
+    var node = document.getElementById(id); if(node) node.remove();
+    delete vessels[id];
+    if(selectedId===id) selectedId=null;
+    pushLog('أُزيل '+vesselLabel(v)+' عن المنضدة.');
+    var hint = document.getElementById('benchHint');
+    if(hint) hint.style.display = (Object.keys(vessels).length || Object.keys(balances).length) ? 'none':'flex';
+    renderDetail();
+  }
+  function duplicateVessel(id){
+    var v = vessels[id]; if(!v) return;
+    pushUndo();
+    var copy = {};
+    for(var k in v){ copy[k] = v[k]; }
+    copy.id = 'v'+(++vCounter);
+    copy.num = vCounter;
+    copy.solids = v.solids.slice();
+    copy.contentsOrder = new Set(v.contentsOrder);
+    copy.x = v.x+140;
+    copy.y = v.y;
+    vessels[copy.id] = copy;
+    createVesselEl(copy);
+    moveVesselTo(copy, copy.x, copy.y);
+    renderVessel(copy);
+    pushLog('نُسخ '+vesselLabel(v)+' بكل محتوياته إلى '+vesselLabel(copy)+'.');
+    selectVessel(copy.id);
+  }
+
+  /* ================= chemistry engine ================= */
+  function has(v, id){ return v.contentsOrder.has(id); }
+  var REACTIVE_METALS = ['zn','fe','mg','al_foil','pb'];
+
+  function recompute(v){
+    var color = null, bubbling = false, note = '', eq = '';
+    var precipColor = null, precipOn = false;
+    var reactionType = null, intensity = 0;
+    v.opacity = 0.85;
+
+    var anyLiquid = v.liquidVolume>0;
+    var coloredLiquids = Array.from(v.contentsOrder).map(function(id){return CHEM_BY_ID[id];}).filter(function(c){return c.phase==='liquid' && c.color && c.color!=='#EAF3F5' && c.color!=='#F3F8F6' && c.color!=='#F0F7F6' && c.color!=='#F6F3F8';});
+    if(coloredLiquids.length) color = coloredLiquids[coloredLiquids.length-1].color;
+    else if(anyLiquid) color = '#EAF3F5';
+
+    // cobalt chloride equilibrium
+    if(has(v,'cocl2')){
+      var heatTerm = clamp01((v.temp-25)/45);
+      var acidTerm = has(v,'hcl_c') ? 0.4 : 0;
+      var coState = clamp01(heatTerm*0.65 + acidTerm);
+      color = mixHex('#E893B8','#4C7FE0', coState);
+      reactionType = 'colorchange'; intensity = coState>0.6?3:(coState>0.25?2:1);
+      note = coState>0.6 ? 'تحوّل المحلول نحو الأزرق — الحرارة و/أو الحمض المركّز أزاحا الاتزان يميناً وفق مبدأ لوشاتلييه.'
+           : 'المحلول قريب من الوردي الأصلي — جرّبي التسخين أو إضافة حمض مركّز لإزاحة الاتزان.';
+      eq = '[Co(H₂O)₆]²⁺ (وردي) + 4Cl⁻ ⇌ [CoCl₄]²⁻ (أزرق) + 6H₂O';
+    }
+
+    // marble + acid -> CO2 bubbles
+    if(has(v,'marble') && (has(v,'hcl_d')||has(v,'hcl_c'))){
+      bubbling = true;
+      reactionType = 'gas'; intensity = has(v,'hcl_c') ? 3 : 2;
+      note = 'تصاعد فقاعات غاز CO₂ من تفاعل الرخام CaCO₃ مع الحمض.';
+      eq = 'CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂↑';
+    }
+    // peroxide + catalyst -> O2 bubbles
+    if(has(v,'h2o2') && has(v,'mno2')){
+      bubbling = true;
+      reactionType = 'gas'; intensity = 3;
+      note = 'تحلّل سريع لبيروكسيد الهيدروجين إلى ماء وأكسجين — MnO₂ يعمل كعامل حفّاز ولا يُستهلك. جرّبي تغيير كمية الحفّاز لملاحظة أثره في السرعة.';
+      eq = '2H₂O₂ —(MnO₂)→ 2H₂O + O₂↑';
+    }
+    // thiosulfate + acid -> sulfur turbidity (classic rate experiment)
+    if(has(v,'na2s2o3') && (has(v,'hcl_d')||has(v,'hcl_c'))){
+      precipColor = '#F0E2A3'; precipOn = true; v.opacity = 0.5;
+      reactionType = 'precipitate'; intensity = 2;
+      note = 'تعكّر المحلول تدريجياً بفعل ترسّب الكبريت الأصفر الناعم — كلما قصر زمن التعكّر كانت سرعة التفاعل أكبر (جرّبي المقارنة بحرارة مختلفة).';
+      eq = 'Na₂S₂O₃ + 2HCl → 2NaCl + S↓ + SO₂ + H₂O';
+    }
+    // metal + acid -> H2 bubbles, intensity by reactivity
+    var metalsInLiquid = REACTIVE_METALS.filter(function(m){ return has(v,m); });
+    if(metalsInLiquid.length && (has(v,'hcl_d')||has(v,'hcl_c'))){
+      var topMetal = metalsInLiquid.map(function(m){return CHEM_BY_ID[m];}).sort(function(a,b){return b.reactivity-a.reactivity;})[0];
+      var metalHclEq = {mg:'Mg + 2HCl → MgCl₂ + H₂↑', zn:'Zn + 2HCl → ZnCl₂ + H₂↑', al_foil:'2Al + 6HCl → 2AlCl₃ + 3H₂↑', fe:'Fe + 2HCl → FeCl₂ + H₂↑'};
+      if(topMetal.reactivity>=4){ bubbling=true; reactionType='gas'; intensity=3; note = 'تفاعل سريع وعنيف مع تصاعد غزير لفقاعات غاز الهيدروجين H₂ — دليل على نشاط فلزّي عالٍ جداً.'; eq = metalHclEq[topMetal.id]||''; }
+      else if(topMetal.reactivity===3){ bubbling=true; reactionType='gas'; intensity=2; note = 'تصاعد فقاعات H₂ بمعدل معتدل — نشاط فلزّي متوسط إلى مرتفع.'; eq = metalHclEq[topMetal.id]||''; }
+      else if(topMetal.reactivity===2){ bubbling=true; reactionType='gas'; intensity=1; note = 'تصاعد بطيء لفقاعات H₂ قليلة — نشاط فلزّي منخفض نسبياً.'; eq = metalHclEq[topMetal.id]||''; }
+      else { reactionType='none'; intensity=0; note = 'لا يكاد يحدث تفاعل ملحوظ — الرصاص منخفض النشاط ويتكوّن عليه غشاء واقٍ من PbCl₂.'; }
+    }
+    // displacement: CuSO4 + active metal
+    if(has(v,'cuso4')){
+      if(has(v,'fe')){
+        color = mixHex('#3E7FD9', '#B9D9A0', 0.7);
+        precipColor = '#B5652E'; precipOn = true;
+        reactionType = 'precipitate'; intensity = 2;
+        note = 'الحديد أنشط من النحاس فيزيحه من محلوله؛ يتحوّل اللون تدريجياً إلى الأخضر الباهت (أيونات Fe²⁺)، ويترسّب نحاس فلزّي.';
+        eq = 'Fe + CuSO₄ → FeSO₄ + Cu';
+      } else if(has(v,'zn') || has(v,'mg') || has(v,'al_foil')){
+        color = mixHex('#3E7FD9', '#EAF3F5', 0.75);
+        precipColor = '#B5652E'; precipOn = true;
+        reactionType = 'precipitate'; intensity = has(v,'mg') ? 3 : 2;
+        note = 'الفلزّ أنشط من النحاس فيزيحه من محلوله — يتلاشى اللون الأزرق تدريجياً ويترسّب نحاس فلزّي.';
+        eq = has(v,'mg') ? 'Mg + CuSO₄ → MgSO₄ + Cu' : has(v,'al_foil') ? '2Al + 3CuSO₄ → Al₂(SO₄)₃ + 3Cu' : 'Zn + CuSO₄ → ZnSO₄ + Cu';
+      } else if(has(v,'pb')){
+        reactionType = 'none'; intensity = 0;
+        note = 'الرصاص أقل نشاطاً من النحاس فلا يحدث إزاحة ملحوظة.';
+      }
+    }
+    // precipitation: AgNO3 + NaCl
+    if(has(v,'agno3') && has(v,'nacl')){
+      precipColor = '#F5F5F2'; precipOn = true;
+      reactionType = 'precipitate'; intensity = 2;
+      note = 'تكوّن راسب أبيض من كلوريد الفضة AgCl — تفاعل ترسيب كلاسيكي.';
+      eq = 'AgNO₃ + NaCl → AgCl↓ + NaNO₃';
+    }
+    // silver recovery: AgNO3 + any metal (all are more active than silver, even copper)
+    var silverMetalIds = ['mg','zn','al_foil','fe','pb','cu'];
+    var silverMetal = silverMetalIds.filter(function(m){ return has(v,m); }).map(function(m){return CHEM_BY_ID[m];}).sort(function(a,b){return b.reactivity-a.reactivity;})[0];
+    if(has(v,'agno3') && silverMetal){
+      precipColor = '#EDEDED'; precipOn = true;
+      reactionType = 'precipitate'; intensity = silverMetal.reactivity>=3 ? 3 : (silverMetal.reactivity>=1 ? 2 : 1);
+      note = silverMetal===CHEM_BY_ID['cu'] ? 'النحاس أنشط من الفضة فيختزل أيونات Ag⁺ إلى بلورات فضة لامعة تشبه الأشجار الدقيقة — تفاعل إزاحة كلاسيكي (شجرة الفضة).'
+           : 'هذا الفلزّ أنشط من الفضة فيختزل أيونات Ag⁺ إلى فضة فلزّية لامعة تترسّب في القاع.';
+      var silverEq = {mg:'Mg + 2AgNO₃ → Mg(NO₃)₂ + 2Ag↓', zn:'Zn + 2AgNO₃ → Zn(NO₃)₂ + 2Ag↓', al_foil:'Al + 3AgNO₃ → Al(NO₃)₃ + 3Ag↓', fe:'Fe + 2AgNO₃ → Fe(NO₃)₂ + 2Ag↓', pb:'Pb + 2AgNO₃ → Pb(NO₃)₂ + 2Ag↓', cu:'Cu + 2AgNO₃ → Cu(NO₃)₂ + 2Ag↓'};
+      eq = silverEq[silverMetal.id]||'';
+    }
+    // displacement: ZnSO4 + a metal more active than zinc
+    var znReactivity = CHEM_BY_ID['zn'].reactivity;
+    var znDisplacerIds = ['mg','fe','al_foil','pb','cu'];
+    var znDisplacer = znDisplacerIds.filter(function(m){ return has(v,m) && CHEM_BY_ID[m].reactivity > znReactivity; })[0];
+    var anyMetalWithZnso4 = znDisplacerIds.concat('zn').some(function(m){ return has(v,m); });
+    if(has(v,'znso4') && znDisplacer){
+      precipColor = '#DADFE0'; precipOn = true;
+      reactionType = 'precipitate'; intensity = 2;
+      note = 'هذا الفلزّ أنشط من الخارصين فيزيحه من محلوله ويترسّب خارصين فلزّي.';
+      eq = 'Mg + ZnSO₄ → MgSO₄ + Zn';
+    } else if(has(v,'znso4') && anyMetalWithZnso4){
+      reactionType = 'none'; intensity = 0;
+      note = 'هذا الفلزّ ليس أنشط من الخارصين، فلا تحدث إزاحة ملحوظة من محلول كبريتات الخارصين.';
+    }
+    // dissolving-rate demo: CuSO4 crystals in water — heat AND stirring both speed up dissolving
+    if(has(v,'cuso4_solid') && anyLiquid){
+      var dissolveFast = v.temp>=45 || v.stirred;
+      color = mixHex('#3E7FD9', '#EAF3F5', dissolveFast ? (v.temp>=45 && v.stirred ? 0.08 : 0.15) : 0.45);
+      reactionType = reactionType || 'colorchange'; intensity = intensity || (v.temp>=45 && v.stirred ? 3 : (dissolveFast?2:1));
+      note = v.temp>=45 && v.stirred ? 'اجتماع الحرارة والتحريك يسرّع الذوبان إلى أقصى درجة — يتحول لون المحلول إلى الأزرق بسرعة كبيرة جداً.'
+           : v.stirred ? 'التحريك المستمر يسرّع الذوبان حتى في الماء البارد — يجدّد تلامس الماء بسطح البلورات باستمرار.'
+           : v.temp>=45 ? 'ترتفع سرعة ذوبان البلورات بارتفاع درجة الحرارة — يتحول لون المحلول إلى الأزرق بسرعة أكبر. جرّبي إضافة ساق التحريك أيضاً لتسريع الذوبان أكثر.'
+           : 'البلورات تذوب ببطء في الماء البارد الساكن — اسحبي موقد بنسن أو ساق التحريك ولاحظي الفرق في سرعة الذوبان.';
+      eq = 'CuSO₄(s) → Cu²⁺(aq) + SO₄²⁻(aq)';
+    }
+    // galvanic corrosion protection demo: iron nail wrapped with another metal, in water or salt water
+    if(has(v,'fe') && (has(v,'mg') || has(v,'cu')) && anyLiquid && !reactionType){
+      note = has(v,'mg')
+        ? 'التآكل الحقيقي بطيء (يحتاج ساعات إلى ليلة كاملة) فلا يظهر فورياً هنا؛ لكن المغنيسيوم أنشط من الحديد فيتأكسد هو بدلاً منه — حماية كاثودية بالتضحية تقي المسمار من الصدأ. في التجربة الحقيقية اتركي الإعداد طوال الليل وقارني درجة الصدأ، خصوصاً بين الماء المقطر والماء المالح.'
+        : 'التآكل الحقيقي بطيء (يحتاج ساعات إلى ليلة كاملة) فلا يظهر فورياً هنا؛ ولأن النحاس أقل نشاطاً من الحديد يصبح الحديد نفسه هو المصعد المتأكسد فيصدأ أسرع من المعتاد. في التجربة الحقيقية اتركي الإعداد طوال الليل وقارني درجة الصدأ، خصوصاً بين الماء المقطر والماء المالح.';
+      eq = has(v,'mg') ? 'Mg → Mg²⁺ + 2e⁻   (يتأكسد المغنيسيوم بدلاً من الحديد)' : 'Fe → Fe²⁺ + 2e⁻   (يتأكسد الحديد بسرعة أكبر بجوار النحاس)';
+    }
+    // tarnish cleaning
+    if(has(v,'ag_tarnished') && has(v,'al_foil') && has(v,'baking_soda')){
+      if(v.temp>=45){ v.tarnishCleaned = true; reactionType='colorchange'; intensity=2; note = 'تحوّلت طبقة التشويه السوداء إلى فضة لامعة — الألومنيوم تأكسد بدلاً من الفضة في تفاعل اختزال كهروكيميائي بمساعدة صودا الخبز والحرارة.'; eq = '3Ag₂S + 2Al → 6Ag + Al₂S₃'; }
+      else { reactionType='heat'; intensity=1; note = 'اسحبي موقد بنسن لتسخين الإناء وتنشيط تفاعل تنظيف الفضة.'; }
+    }
+
+    // indicators
+    var netAB = v.acidUnits - v.baseUnits;
+    if(has(v,'phenol')){
+      color = (netAB < 0) ? '#E86FA6' : (anyLiquid ? '#EAF3F5' : color);
+      if(netAB<0){ reactionType = reactionType || 'colorchange'; intensity = intensity || 1; }
+      note = note || (netAB<0 ? 'الوسط قاعدي — تحوّل الفينولفثالين إلى اللون الوردي (نقطة نهاية معايرة محتملة).' : 'الوسط حمضي أو متعادل — الفينولفثالين عديم اللون.');
+    }
+    if(has(v,'universal')){
+      var stops = ['#E24B3C','#F0913A','#3FA55A','#2F8FD9','#6A4FD9'];
+      var idx = Math.max(0, Math.min(4, Math.round(2 - netAB)));
+      color = stops[idx];
+      reactionType = reactionType || 'colorchange'; intensity = intensity || 1;
+      note = note || 'لون دليل الملفوف الأحمر / الدليل العام يعكس الرقم الهيدروجيني التقريبي للمزيج.';
+    }
+    // acid-base neutralization equation — shown whenever both an acid and a base have been added to the same vessel
+    if(!eq && v.acidUnits>0 && v.baseUnits>0){ eq = 'H⁺(aq) + OH⁻(aq) → H₂O(l)'; }
+
+    // thermal dissolving: salts like CaCl2 (exothermic) / NH4Cl (endothermic) shift the vessel's resting temperature
+    var thermalSolids = v.solids.map(function(sid){ return CHEM_BY_ID[sid]; }).filter(function(c){ return c && c.dissolveHeat; });
+    if(thermalSolids.length && anyLiquid && !note){
+      var netHeat = thermalSolids.reduce(function(s,c){ return s+c.dissolveHeat; }, 0);
+      reactionType = 'thermal'; intensity = Math.max(1, Math.min(3, Math.round(Math.abs(netHeat)/4)));
+      note = netHeat>0
+        ? 'تفاعل طارد للحرارة — ترتفع درجة حرارة المحلول تدريجياً وتستقر عند مستوى أعلى من درجة حرارة الغرفة. اسحبي ميزان الحرارة عليه لقياسها.'
+        : 'تفاعل ماصّ للحرارة — تنخفض درجة حرارة المحلول تدريجياً وتستقر عند مستوى أقل من درجة حرارة الغرفة. اسحبي ميزان الحرارة عليه لقياسها.';
+      var thermalEqParts = [];
+      if(has(v,'cacl2')) thermalEqParts.push('CaCl₂(s) → Ca²⁺(aq) + 2Cl⁻(aq)');
+      if(has(v,'nh4cl')) thermalEqParts.push('NH₄Cl(s) → NH₄⁺(aq) + Cl⁻(aq)');
+      eq = thermalEqParts.join('   ؛   ');
+    }
+
+    // boiling: any heated liquid nearing/at 100°س bubbles and gives off visible steam, regardless of chemistry
+    v.boiling = anyLiquid && v.temp>=98;
+    v.steaming = anyLiquid && v.temp>=80 && v.temp<98;
+    if(v.boiling){
+      bubbling = true;
+      if(!note){ reactionType = 'gas'; intensity = 3; note = 'وصل السائل إلى درجة الغليان (100°س تقريباً) — تصاعدت فقاعات البخار بقوة وظهر بخار الماء بوضوح فوق السطح.'; if(v.contentsOrder.size<=1 && has(v,'water')) eq = 'H₂O(l) → H₂O(g)'; }
+    } else if(v.steaming && !note && v.contentsOrder.size<=1){
+      note = 'يقترب السائل من درجة الغليان — استمري بالتسخين لملاحظة الغليان الكامل.';
+    }
+    // frost: iced vessel near freezing shows a misted, frosted glass look
+    v.frosty = !!v.iced && v.temp<=2;
+
+    if(!note && v.contentsOrder.size>=2){ note = 'تم مزج المواد — لا يوجد تفاعل مرئي واضح بين هذه المكوّنات تحديداً.'; }
+    if(!note && v.contentsOrder.size===1 && v.solids.length && !anyLiquid){ note = 'أضيفي سائلاً لإذابة المادة الصلبة أو تفعيل تفاعلها.'; }
+
+    v.color = color; v.bubbling = bubbling; v.note = note; v.eq = eq;
+    v.precipitateColor = precipColor; v.precipitateOn = precipOn;
+    v.reactionType = reactionType; v.intensity = intensity;
+  }
+
+  function pour(v, chemId){
+    var chem = CHEM_BY_ID[chemId];
+    if(chem.phase==='liquid'){
+      var amt = 10;
+      var room = EQ_BY_ID[v.type].max - v.liquidVolume;
+      if(room<=0){ pushLog('⚠️ '+vesselLabel(v)+' ممتلئ — أفرغيه قبل الإضافة.'); flashVessel(v.id); return; }
+      pushUndo();
+      amt = Math.min(amt, room);
+      v.liquidVolume += amt;
+    } else {
+      if(v.solids.length>=6){ pushLog('⚠️ يكفي من المادة الصلبة في '+vesselLabel(v)+'.'); flashVessel(v.id); return; }
+      pushUndo();
+      v.solids.push(chemId);
+      if(chem.dissolveHeat && v.liquidVolume>0){
+        v.temp = Math.max(0, Math.min(100, v.temp + chem.dissolveHeat));
+      }
+    }
+    v.contentsOrder.add(chemId);
+    if(chem.acid) v.acidUnits += chem.concentrated?2:chem.acid;
+    if(chem.base) v.baseUnits += chem.base;
+
+    pushLog('سُكِب <b>'+chem.name+'</b> في '+vesselLabel(v)+'.');
+    recompute(v);
+    if(v.reactionType && v.reactionType!=='none') bumpLocalReactionCount();
+    if(v.note) pushLog(v.note);
+    renderVessel(v);
+    if(selectedId===v.id) renderDetail();
+  }
+
+  function flashVessel(id){
+    var d = document.getElementById(id); if(!d) return;
+    d.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}], {duration:260});
+  }
+
+  var HEAT_TARGETS = {1:55, 2:82, 3:104};
+  var ICE_TARGETS  = {1:12, 2:4,  3:-4};
+  var ICE_TARGETS_BRINE = {1:2, 2:-6, 3:-14};
+  var timeSpeed = 1;
+
+  // resting (room) temperature for a vessel that is not on a burner or in ice — shifted by any dissolved
+  // exothermic/endothermic salt (CaCl2, NH4Cl) currently in it, so the effect stays visible instead of fading back to 25°.
+  function restTemp(v){
+    var offset = 0;
+    v.solids.forEach(function(sid){ var c = CHEM_BY_ID[sid]; if(c && c.dissolveHeat) offset += c.dissolveHeat; });
+    return Math.max(-8, Math.min(60, 25 + offset));
+  }
+
+  setInterval(function(){
+    Object.keys(vessels).forEach(function(id){
+      var v = vessels[id];
+      var target = v.heated ? HEAT_TARGETS[v.heatLevel||2]
+                 : (v.iced ? ((has(v,'nacl')||has(v,'nacl_solid')) ? ICE_TARGETS_BRINE[v.iceLevel||2] : ICE_TARGETS[v.iceLevel||2]) : restTemp(v));
+      if(Math.abs(v.temp-target) > 0.3){
+        v.temp += (target - v.temp) * 0.12 * timeSpeed;
+        recompute(v);
+        renderVessel(v);
+      }
+    });
+  }, 450);
+
+  function setHeatLevel(id, lvl){
+    var v = vessels[id]; if(!v) return;
+    v.heatLevel = lvl;
+    pushLog('ضُبط مستوى التسخين على '+lvl+'/3 في '+vesselLabel(v)+'.');
+    renderVessel(v); renderDetail();
+  }
+  function setIceLevel(id, lvl){
+    var v = vessels[id]; if(!v) return;
+    v.iceLevel = lvl;
+    pushLog('ضُبط مستوى التبريد على '+lvl+'/3 في '+vesselLabel(v)+'.');
+    renderVessel(v); renderDetail();
+  }
+  function cycleSpeed(){
+    timeSpeed = timeSpeed===1?2:(timeSpeed===2?4:1);
+    var btn = document.getElementById('speedBtn');
+    var lbl = document.getElementById('speedLabel');
+    var map = {1:'١×',2:'٢×',4:'٤×'};
+    if(lbl) lbl.textContent = map[timeSpeed];
+    if(btn){ btn.classList.remove('x2','x4'); if(timeSpeed===2) btn.classList.add('x2'); if(timeSpeed===4) btn.classList.add('x4'); }
+    pushLog('سرعة الزمن الآن '+map[timeSpeed]+'.');
+  }
+  (function(){
+    var btn = document.getElementById('speedBtn');
+    if(btn) btn.addEventListener('click', cycleSpeed);
+    var ubtn = document.getElementById('undoBtn');
+    if(ubtn) ubtn.addEventListener('click', undoLast);
+    var rbtn = document.getElementById('redoBtn');
+    if(rbtn) rbtn.addEventListener('click', redoLast);
+    updateHistoryButtons();
+  })();
+
+  /* ================= drag & drop core ================= */
+  var dragState = null;
+
+  function startDrag(originEl, kind, payloadId, evt){
+    evt.preventDefault();
+    var ghost = originEl.cloneNode(true);
+    ghost.classList.add('ghost');
+    ghost.setAttribute('dir','rtl');
+    ghost.style.width = originEl.getBoundingClientRect().width+'px';
+    document.body.appendChild(ghost);
+    positionGhost(ghost, evt);
+    dragState = {kind:kind, payloadId:payloadId, ghost:ghost, origin:originEl, lastX:evt.clientX, lastY:evt.clientY};
+    if(kind!=='vessel') originEl.classList.add('dragging');
+    else originEl.style.opacity = '0.3';
+    document.addEventListener('pointermove', onDragMove);
+    document.addEventListener('pointerup', onDragEnd);
+    // on small/mobile screens the tray sits above the bench, so a drag that nears the top or
+    // bottom edge of the viewport auto-scrolls the page — otherwise the bench can be out of
+    // reach and the dragged item feels "stuck" with nowhere to be dropped.
+    dragState.scrollTimer = setInterval(autoScrollDuringDrag, 16);
+  }
+  function autoScrollDuringDrag(){
+    if(!dragState) return;
+    var margin = 90, maxSpeed = 22, vh = window.innerHeight, y = dragState.lastY;
+    if(y < margin) window.scrollBy(0, -maxSpeed * (1 - y/margin));
+    else if(y > vh - margin) window.scrollBy(0, maxSpeed * (1 - (vh-y)/margin));
+  }
+  function positionGhost(ghost, evt){ ghost.style.left = evt.clientX+'px'; ghost.style.top = evt.clientY+'px'; }
+  // finds the closest vessel to a drop point even if the cursor landed just outside its glass —
+  // vessels are small drop targets, so a strict pixel-exact hit test made near-misses feel broken.
+  function nearestVesselElement(x, y, maxDist){
+    var best = null, bestDist = maxDist;
+    document.querySelectorAll('.vessel').forEach(function(el){
+      var r = el.getBoundingClientRect();
+      var cx = Math.max(r.left, Math.min(x, r.right));
+      var cy = Math.max(r.top, Math.min(y, r.bottom));
+      var dist = Math.hypot(x-cx, y-cy);
+      if(dist < bestDist){ bestDist = dist; best = el; }
+    });
+    return best;
+  }
+  function onDragMove(evt){
+    if(!dragState) return;
+    dragState.lastX = evt.clientX; dragState.lastY = evt.clientY;
+    positionGhost(dragState.ghost, evt);
+    var bench = document.getElementById('bench');
+    var over = document.elementFromPoint(evt.clientX, evt.clientY);
+    var overVessel = over && over.closest ? over.closest('.vessel') : null;
+    var overBalance = over && over.closest ? over.closest('.balance-station') : null;
+    var overBench = over && over.closest ? over.closest('#bench') : null;
+    document.querySelectorAll('.vessel, .balance-station').forEach(function(x){x.style.outline='';});
+    if(overVessel && (dragState.kind!=='vessel' || overVessel.id!==dragState.payloadId)) overVessel.style.outline = '2px dashed var(--brand)';
+    if(overBalance && dragState.kind==='chem') overBalance.style.outline = '2px dashed var(--brand)';
+    var benchTargetKind = dragState.kind==='equip' || dragState.kind==='vessel' || dragState.kind==='balance' ||
+      (dragState.kind==='tool' && dragState.payloadId==='balance' && !overVessel);
+    bench.classList.toggle('drag-over', !!overBench && benchTargetKind);
+  }
+  function onDragEnd(evt){
+    if(!dragState) return;
+    var over = document.elementFromPoint(evt.clientX, evt.clientY);
+    var overVesselEl = over && over.closest ? over.closest('.vessel') : null;
+    var overBalanceEl = over && over.closest ? over.closest('.balance-station') : null;
+    var overBenchEl = over && over.closest ? over.closest('#bench') : null;
+    var bench = document.getElementById('bench');
+    var benchRect = bench.getBoundingClientRect();
+
+    if(dragState.kind==='equip' && overBenchEl){
+      addVessel(dragState.payloadId, evt.clientX-benchRect.left, evt.clientY-benchRect.top, true);
+    } else if(dragState.kind==='chem' && overBalanceEl){
+      var bal = balances[overBalanceEl.id];
+      var chemD = CHEM_BY_ID[dragState.payloadId];
+      if(bal && chemD){
+        if(chemD.phase!=='solid'){
+          pushLog('⚠️ الميزان الرقمي يزن المواد الصلبة فقط — اسكبي السوائل في إناء بدلاً من ذلك.');
+          flashBalance(bal.id);
+        } else if(bal.items.length>=6){
+          pushLog('⚠️ يكفي من المواد على كفة الميزان — صفّريه أولاً.');
+          flashBalance(bal.id);
+        } else {
+          pushUndo();
+          bal.items.push(chemD.id);
+          bal.weight = Math.round(((bal.weight||0) + (chemD.mass||0))*100)/100;
+          pushLog('وُضع '+chemD.name+' على الميزان الرقمي — الوزن الآن '+bal.weight+' g. (اضغطي على القراءة لتعديل الوزن يدوياً)');
+          renderBalance(bal);
+        }
+      }
+    } else if(dragState.kind==='chem' && overVesselEl){
+      var vv = vessels[overVesselEl.id];
+      if(vv) pour(vv, dragState.payloadId);
+    } else if(dragState.kind==='balitem' && overVesselEl){
+      var balSrc = balances[dragState.payloadId];
+      var vt2 = vessels[overVesselEl.id];
+      if(balSrc && vt2 && balSrc.items.length){
+        pushUndo();
+        var toPour = balSrc.items.slice();
+        var wasWeight = balSrc.weight;
+        var addedAny = false;
+        toPour.forEach(function(cid){
+          var chem = CHEM_BY_ID[cid];
+          if(vt2.solids.length<6){
+            vt2.solids.push(cid);
+            vt2.contentsOrder.add(cid);
+            addedAny = true;
+            if(chem.dissolveHeat && vt2.liquidVolume>0){ vt2.temp = Math.max(0, Math.min(100, vt2.temp + chem.dissolveHeat)); }
+          }
+        });
+        balSrc.items = [];
+        balSrc.weight = 0;
+        pushLog(addedAny ? 'نُقلت المادة الموزونة ('+wasWeight+' g) من الميزان الرقمي إلى '+vesselLabel(vt2)+'.' : '⚠️ '+vesselLabel(vt2)+' ممتلئ بالمواد الصلبة — أفرغيه قبل النقل.');
+        recompute(vt2);
+        renderVessel(vt2);
+        renderBalance(balSrc);
+        if(selectedId===vt2.id) renderDetail();
+      }
+    } else if(dragState.kind==='tool' && dragState.payloadId==='balance' && overBenchEl && !overVesselEl && !overBalanceEl){
+      addBalance(evt.clientX-benchRect.left, evt.clientY-benchRect.top);
+    } else if(dragState.kind==='tool'){
+      // tools like the thermometer land on a small vessel target; forgive a near-miss drop instead of
+      // silently snapping back with no feedback (this is what felt like "it just goes back and does nothing").
+      var toolTargetEl = overVesselEl || (dragState.payloadId!=='balance' ? nearestVesselElement(evt.clientX, evt.clientY, 46) : null);
+      if(toolTargetEl){
+        var vt = vessels[toolTargetEl.id];
+        if(vt){
+          pushUndo();
+          if(dragState.payloadId==='burner'){
+            vt.heated = !vt.heated; if(vt.heated) vt.iced=false;
+            pushLog(vt.heated? 'أُشعل الموقد تحت '+vesselLabel(vt)+'.' : 'أُطفئ الموقد تحت '+vesselLabel(vt)+'.');
+          } else if(dragState.payloadId==='ice'){
+            vt.iced = !vt.iced; if(vt.iced) vt.heated=false;
+            pushLog(vt.iced? 'أُضيفت مكعبات ثلج حول '+vesselLabel(vt)+'.' : 'أُزيل الثلج عن '+vesselLabel(vt)+'.');
+          } else if(dragState.payloadId==='therm'){
+            vt.showTemp = true;
+            pushLog('قِيست درجة حرارة '+vesselLabel(vt)+': '+Math.round(vt.temp)+'°س.');
+          } else if(dragState.payloadId==='stir'){
+            vt.stirred = !vt.stirred;
+            pushLog(vt.stirred? 'بدأ تحريك '+vesselLabel(vt)+' بساق التحريك — يسرّع الذوبان والتفاعل.' : 'توقّف تحريك '+vesselLabel(vt)+'.');
+          } else if(dragState.payloadId==='balance'){
+            vt.showMass = true;
+            pushLog('وُزنت المواد الصلبة في '+vesselLabel(vt)+': '+massOf(vt)+' g.');
+          }
+          recompute(vt);
+          renderVessel(vt);
+        }
+      } else if(overBenchEl && dragState.payloadId!=='balance'){
+        var toolDef = TOOLS.filter(function(t){ return t.id===dragState.payloadId; })[0];
+        pushLog('⚠️ أفلتي '+(toolDef?toolDef.name:'الأداة')+' فوق الإناء مباشرة لاستخدامها عليه.');
+      }
+    } else if(dragState.kind==='vessel' && overVesselEl && overVesselEl.id!==dragState.payloadId){
+      var vSrcT = vessels[dragState.payloadId];
+      var vDstT = vessels[overVesselEl.id];
+      if(vSrcT && vDstT) transferVessel(vSrcT, vDstT);
+    } else if(dragState.kind==='vessel' && overBenchEl){
+      var vid = dragState.payloadId;
+      var vv2 = vessels[vid];
+      if(vv2) moveVesselTo(vv2, evt.clientX-benchRect.left, evt.clientY-benchRect.top);
+    } else if(dragState.kind==='balance' && overBenchEl){
+      var bid = dragState.payloadId;
+      var bal2 = balances[bid];
+      if(bal2) moveBalanceTo(bal2, evt.clientX-benchRect.left, evt.clientY-benchRect.top);
+    }
+
+    document.querySelectorAll('.vessel, .balance-station').forEach(function(x){x.style.outline='';});
+    bench.classList.remove('drag-over');
+    if(dragState.kind!=='vessel' && dragState.kind!=='balance') dragState.origin.classList.remove('dragging');
+    else dragState.origin.style.opacity = '';
+    dragState.ghost.remove();
+    clearInterval(dragState.scrollTimer);
+    dragState = null;
+    document.removeEventListener('pointermove', onDragMove);
+    document.removeEventListener('pointerup', onDragEnd);
+  }
+
+  function addVessel(equipId, x, y, select){
+    pushUndo();
+    var v = { id:'v'+(++vCounter), num:vCounter, type:equipId, x:x, y:y,
+      liquidVolume:0, solids:[], contentsOrder:new Set(), color:null, temp:25, heated:false, iced:false, stirred:false, showTemp:false, showMass:false,
+      heatLevel:2, iceLevel:2, reactionType:null, intensity:0,
+      bubbling:false, note:'', precipitateColor:null, precipitateOn:false, acidUnits:0, baseUnits:0, tarnishCleaned:false, opacity:0.85 };
+    vessels[v.id] = v;
+    var hint = document.getElementById('benchHint'); if(hint) hint.style.display='none';
+    createVesselEl(v);
+    moveVesselTo(v, x, y);
+    renderVessel(v);
+    pushLog('وُضع '+vesselLabel(v)+' على المنضدة.');
+    if(select) selectVessel(v.id);
+    return v;
+  }
+
+  function makeVesselDraggable(node, v){
+    node.addEventListener('pointerdown', function(evt){
+      if(evt.target.closest('.remove-x') || evt.target.closest('.mol-cloud-btn') || evt.target.closest('.vol-badge')) return;
+      var sx=evt.clientX, sy=evt.clientY;
+      function checkMove(e){
+        if(Math.hypot(e.clientX-sx, e.clientY-sy) > 6){
+          document.removeEventListener('pointermove', checkMove);
+          document.removeEventListener('pointerup', cancel);
+          startDrag(node, 'vessel', v.id, evt);
+        }
+      }
+      function cancel(){ document.removeEventListener('pointermove', checkMove); document.removeEventListener('pointerup', cancel); }
+      document.addEventListener('pointermove', checkMove);
+      document.addEventListener('pointerup', cancel);
+    });
+  }
+
+  /* ================= digital balance station (real bench instrument) ================= */
+  function addBalance(x, y){
+    pushUndo();
+    var b = { id:'bal'+(++balCounter), num:balCounter, x:0, y:0, items:[], weight:0 };
+    balances[b.id] = b;
+    var hint = document.getElementById('benchHint'); if(hint) hint.style.display='none';
+    createBalanceEl(b);
+    moveBalanceTo(b, x, y);
+    renderBalance(b);
+    pushLog('وُضع ميزان رقمي #'+b.num+' على المنضدة — اسحبي مادة صلبة إليه لوزنها، أو اضغطي على قراءة الوزن لكتابة الوزن الذي تريدينه مباشرة.');
+    return b;
+  }
+  function moveBalanceTo(b, x, y){
+    var bench = document.getElementById('bench');
+    var r = bench.getBoundingClientRect();
+    var relX = Math.max(50, Math.min(r.width-50, x));
+    var relY = Math.max(60, Math.min(r.height-20, y));
+    b.x = relX; b.y = relY;
+    var d = document.getElementById(b.id);
+    if(d){ d.style.left = relX+'px'; d.style.top = relY+'px'; }
+  }
+  function createBalanceEl(b){
+    var d = document.createElement('div');
+    d.className = 'balance-station'; d.id = b.id;
+    d.innerHTML =
+      '<div class="tare-btn" title="تصفير الميزان"><svg><use href="#ic-refresh"/></svg></div>'+
+      '<div class="remove-x" title="إزالة الميزان"><svg><use href="#ic-x"/></svg></div>'+
+      '<div class="platform"></div>'+
+      '<div class="readout">0 g</div>'+
+      '<div class="bal-label">ميزان رقمي #'+b.num+'</div>';
+    document.getElementById('bench').appendChild(d);
+    d.style.left = b.x+'px'; d.style.top = b.y+'px';
+    d.addEventListener('click', function(ev){
+      if(ev.target.closest('.remove-x')){ removeBalance(b.id); return; }
+      if(ev.target.closest('.tare-btn')){ tareBalance(b.id); return; }
+      if(ev.target.closest('.readout')){ startWeightEdit(b.id); return; }
+    });
+    makeBalanceDraggable(d, b);
+    return d;
+  }
+  function renderBalance(b){
+    var d = document.getElementById(b.id); if(!d) return;
+    var platform = d.querySelector('.platform');
+    platform.innerHTML = b.items.map(function(id){
+      var c = CHEM_BY_ID[id];
+      return '<span class="pan-item" style="background:'+(c && c.color || '#8a8a8a')+'"></span>';
+    }).join('');
+    var readout = d.querySelector('.readout');
+    if(readout) readout.textContent = (b.weight||0)+' g';
+  }
+  function startWeightEdit(id){
+    var b = balances[id]; if(!b) return;
+    var d = document.getElementById(id); if(!d) return;
+    var readout = d.querySelector('.readout');
+    if(readout.querySelector('input')) return;
+    readout.innerHTML = '<input type="number" step="0.1" min="0" max="2000" class="weight-input">';
+    var input = readout.querySelector('input');
+    input.value = b.weight||0;
+    input.addEventListener('pointerdown', function(ev){ ev.stopPropagation(); });
+    input.addEventListener('click', function(ev){ ev.stopPropagation(); });
+    var done = false;
+    function commit(){
+      if(done) return; done = true;
+      var val = parseFloat(input.value);
+      if(isNaN(val) || val<0) val = 0;
+      val = Math.round(val*100)/100;
+      if(val !== b.weight){
+        pushUndo();
+        b.weight = val;
+        pushLog('ضُبط الوزن يدوياً على ميزان رقمي #'+b.num+' إلى '+val+' g.');
+      }
+      renderBalance(b);
+    }
+    input.addEventListener('keydown', function(ev){
+      if(ev.key==='Enter'){ ev.preventDefault(); commit(); }
+      else if(ev.key==='Escape'){ done = true; renderBalance(b); }
+    });
+    input.addEventListener('blur', commit);
+    input.focus();
+    input.select();
+  }
+  function flashBalance(id){
+    var d = document.getElementById(id); if(!d) return;
+    d.animate([{transform:'translate(-56px,-100%)'},{transform:'translate(-60px,-100%)'},{transform:'translate(-52px,-100%)'},{transform:'translate(-56px,-100%)'}], {duration:260});
+  }
+  function tareBalance(id){
+    var b = balances[id]; if(!b) return;
+    pushUndo();
+    b.items = [];
+    b.weight = 0;
+    pushLog('صُفِّر ميزان رقمي #'+b.num+'.');
+    renderBalance(b);
+  }
+  function removeBalance(id){
+    var b = balances[id]; if(!b) return;
+    pushUndo();
+    var node = document.getElementById(id); if(node) node.remove();
+    delete balances[id];
+    pushLog('أُزيل ميزان رقمي #'+b.num+' عن المنضدة.');
+    var hint = document.getElementById('benchHint');
+    if(hint) hint.style.display = (Object.keys(vessels).length || Object.keys(balances).length) ? 'none':'flex';
+  }
+  function makeBalanceDraggable(node, b){
+    node.addEventListener('pointerdown', function(evt){
+      if(evt.target.closest('.remove-x') || evt.target.closest('.tare-btn') || evt.target.closest('.readout')) return;
+      // dragging the weighed material itself off the pan (to pour it into a vessel) — not the whole station
+      if(evt.target.closest('.platform') && b.items.length){
+        startDrag(node.querySelector('.platform'), 'balitem', b.id, evt);
+        return;
+      }
+      var sx=evt.clientX, sy=evt.clientY;
+      function checkMove(e){
+        if(Math.hypot(e.clientX-sx, e.clientY-sy) > 6){
+          document.removeEventListener('pointermove', checkMove);
+          document.removeEventListener('pointerup', cancel);
+          startDrag(node, 'balance', b.id, evt);
+        }
+      }
+      function cancel(){ document.removeEventListener('pointermove', checkMove); document.removeEventListener('pointerup', cancel); }
+      document.addEventListener('pointermove', checkMove);
+      document.addEventListener('pointerup', cancel);
+    });
+  }
+
+  /* ================= sandbox trays ================= */
+  function equipmentSwatch(eq){ return '<svg viewBox="0 0 24 24" style="color:var(--brand)"><use href="'+eq.icon+'"/></svg>'; }
+  function chemSwatch(chem){
+    if(chem.jar){ return '<svg viewBox="0 0 24 24"><use href="#ic-jar" fill="'+(chem.color||'#c9bfa0')+'" stroke="var(--line-strong)" stroke-width="1"/></svg>'; }
+    return '<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="3" fill="var(--ink-faint)"/><path d="M9 9.5h6l3 7.2a1 1 0 0 1-1 1.4H7a1 1 0 0 1-1-1.4Z" fill="'+(chem.color||'#EAF3F5')+'" opacity="0.9" stroke="var(--line-strong)" stroke-width="1"/></svg>';
+  }
+
+  var equipTray = document.getElementById('equipTray');
+  EQUIPMENT.forEach(function(eq){
+    var item = document.createElement('div'); item.className = 'tray-item';
+    item.innerHTML = '<span class="swatch">'+equipmentSwatch(eq)+'</span><span class="meta"><b>'+eq.name+'</b><span>اسحبيه إلى المنضدة</span></span>';
+    item.addEventListener('pointerdown', function(evt){ startDrag(item, 'equip', eq.id, evt); });
+    equipTray.appendChild(item);
+  });
+
+  var toolsStrip = document.getElementById('toolsStrip');
+  TOOLS.forEach(function(tool){
+    var chip = document.createElement('div'); chip.className = 'tool-chip'; chip.id = 'tool-'+tool.id;
+    chip.innerHTML = '<svg><use href="'+tool.icon+'"/></svg><span>'+tool.name+'</span>';
+    chip.addEventListener('pointerdown', function(evt){ startDrag(chip, 'tool', tool.id, evt); });
+    toolsStrip.appendChild(chip);
+  });
+
+  var matTabsEl = document.getElementById('matTabs');
+  var chemTray = document.getElementById('chemTray');
+  function selectMatTab(btn){
+    matTabsEl.querySelectorAll('button').forEach(function(x){x.classList.remove('active');});
+    btn.classList.add('active');
+    var matTab = btn.getAttribute('data-mat-tab');
+    equipTray.hidden = matTab!=='glass';
+    toolsStrip.hidden = matTab!=='tools';
+    chemTray.hidden = matTab==='glass' || matTab==='tools';
+    if(!chemTray.hidden){ activeChemTab = matTab; renderChemTray(); }
+  }
+  matTabsEl.querySelectorAll('button[data-mat-tab]').forEach(function(b){
+    b.addEventListener('click', function(){ selectMatTab(b); });
+  });
+  CHEM_TABS.forEach(function(tab){
+    var b = document.createElement('button'); b.textContent = tab.label; b.setAttribute('data-mat-tab', tab.id);
+    b.addEventListener('click', function(){ selectMatTab(b); });
+    matTabsEl.appendChild(b);
+  });
+  var activePopover = null;
+  function closePopover(){ if(activePopover){ activePopover.remove(); activePopover=null; } }
+  function renderChemTray(){
+    chemTray.innerHTML = '';
+    CHEMICALS.filter(function(c){return c.cat===activeChemTab;}).forEach(function(chem){
+      var item = document.createElement('div'); item.className = 'tray-item';
+      item.innerHTML = '<span class="swatch">'+chemSwatch(chem)+'</span><span class="meta"><b>'+chem.name+'</b><span>'+chem.formula+'</span></span><span class="info-dot">؟</span>';
+      item.querySelector('.info-dot').addEventListener('click', function(ev){
+        ev.stopPropagation(); closePopover();
+        var pop = document.createElement('div'); pop.className='popover'; pop.setAttribute('dir','rtl');
+        pop.innerHTML = '<b>'+chem.name+'</b><span class="f">'+chem.formula+'</span><p>'+chem.desc+'</p>';
+        document.body.appendChild(pop);
+        var r = ev.target.getBoundingClientRect();
+        pop.style.top = (r.bottom+8)+'px';
+        pop.style.left = Math.max(10, Math.min(window.innerWidth-250, r.left-200))+'px';
+        activePopover = pop;
+      });
+      item.addEventListener('pointerdown', function(evt){ if(evt.target.closest('.info-dot')) return; startDrag(item, 'chem', chem.id, evt); });
+      chemTray.appendChild(item);
+    });
+  }
+  renderChemTray();
+  document.addEventListener('click', function(ev){ if(activePopover && !ev.target.closest('.popover') && !ev.target.closest('.info-dot')) closePopover(); });
+
+  document.getElementById('bench').addEventListener('click', function(ev){
+    if(ev.target.id==='bench' || ev.target.id==='benchHint'){ selectedId=null; renderDetail(); Object.keys(vessels).forEach(function(k){renderVessel(vessels[k]);}); }
+  });
+
+  /* ================= experiment gallery + auto-setup ================= */
+  var activeFilter = 'all';
+  function renderFilters(){
+    var wrap = document.getElementById('filters'); wrap.innerHTML = '';
+    var allChip = document.createElement('button'); allChip.className = 'filter-chip active'; allChip.textContent = 'كل التجارب ('+EXPERIMENTS.length+')';
+    allChip.addEventListener('click', function(){ activeFilter='all'; refreshFilterUI(); renderGallery(); });
+    wrap.appendChild(allChip);
+    Object.keys(CATS).forEach(function(cid){
+      var c = CATS[cid];
+      var n = EXPERIMENTS.filter(function(x){return x.cat===cid;}).length;
+      var chip = document.createElement('button'); chip.className='filter-chip'; chip.dataset.cat = cid;
+      chip.innerHTML = '<span class="dot" style="background:'+c.color+'"></span>'+c.label+' ('+n+')';
+      chip.addEventListener('click', function(){ activeFilter=cid; refreshFilterUI(); renderGallery(); });
+      wrap.appendChild(chip);
+    });
+    function refreshFilterUI(){
+      wrap.querySelectorAll('.filter-chip').forEach(function(ch){ ch.classList.remove('active'); });
+      if(activeFilter==='all') allChip.classList.add('active');
+      else wrap.querySelector('[data-cat="'+activeFilter+'"]').classList.add('active');
+    }
+  }
+  function renderGallery(){
+    var grid = document.getElementById('egrid'); grid.innerHTML = '';
+    var list = activeFilter==='all' ? EXPERIMENTS : EXPERIMENTS.filter(function(x){return x.cat===activeFilter;});
+    list.forEach(function(x){
+      var cat = CATS[x.cat];
+      var done = quizState[x.id] && quizState[x.id].done;
+      var card = document.createElement('div'); card.className='ecard';
+      card.innerHTML =
+        '<div class="top" style="background:'+cat.color+'"></div>'+
+        (done? '<div class="quiz-badge"><svg><use href="#ic-check"/></svg></div>' : '')+
+        '<div class="body">'+
+          '<div class="head"><div class="icon" style="background:color-mix(in srgb, '+cat.color+' 18%, transparent); color:'+cat.color+'"><svg><use href="'+x.icon+'"/></svg></div></div>'+
+          '<span class="catlabel" style="color:'+cat.color+'">'+cat.label+'</span>'+
+          '<h3>'+x.title+'</h3>'+
+          '<div class="q">'+x.question+'</div>'+
+          '<div class="foot">'+
+            '<button class="btn primary" data-start="'+x.id+'">جرّبيها في المختبر<svg><use href="#ic-flask"/></svg></button>'+
+            '<button class="btn" data-steps="'+x.id+'" title="خطوات التجربة"><svg><use href="#ic-book"/></svg></button>'+
+            '<button class="btn" data-quiz="'+x.id+'" title="أسئلة تفاعلية"><svg><use href="#ic-quiz"/></svg></button>'+
+          '</div>'+
+        '</div>';
+      grid.appendChild(card);
+    });
+    grid.querySelectorAll('[data-start]').forEach(function(b){
+      b.addEventListener('click', function(){ startExperiment(b.getAttribute('data-start')); });
+    });
+    grid.querySelectorAll('[data-steps]').forEach(function(b){
+      b.addEventListener('click', function(){ openStepsModal(b.getAttribute('data-steps')); });
+    });
+    grid.querySelectorAll('[data-quiz]').forEach(function(b){
+      b.addEventListener('click', function(){ showView('quiz'); openQuizItem(b.getAttribute('data-quiz')); });
+    });
+  }
+  function openStepsModal(expId){
+    var x = EXP_BY_ID[expId]; if(!x) return;
+    var cat = CATS[x.cat];
+    var stepsHtml = (x.steps||[]).map(function(s,i){ return '<li><b>'+(i+1)+'</b><span>'+s+'</span></li>'; }).join('');
+    var explainHtml = x.explain ? (
+      '<div class="science-box">'+
+        '<div class="sb-head"><svg><use href="#ic-info"/></svg>تفسير النتائج</div>'+
+        '<p>'+x.explain+'</p>'+
+      '</div>'
+    ) : '';
+    openModal(
+      '<h3>خطوات: '+x.title+'</h3>'+
+      '<p style="margin-block-end:14px">'+x.question+'</p>'+
+      '<ol class="steps-list">'+stepsHtml+'</ol>'+
+      explainHtml+
+      '<div class="detail-actions" style="margin-block-start:16px">'+
+        '<button class="btn primary" data-modal-start="'+x.id+'">جرّبيها الآن في المختبر<svg><use href="#ic-flask"/></svg></button>'+
+      '</div>'
+    );
+    var startBtn = document.querySelector('[data-modal-start="'+x.id+'"]');
+    if(startBtn) startBtn.addEventListener('click', function(){
+      document.querySelector('.modal-backdrop').remove();
+      startExperiment(x.id);
+    });
+  }
+  var currentStepsExpId = null;
+  var currentStepsDone = {};
+  function renderStepsPanel(expId){
+    var panel = document.getElementById('stepsPanel');
+    if(!panel) return;
+    var x = EXP_BY_ID[expId];
+    if(!x || !x.steps || !x.steps.length){ panel.hidden = true; return; }
+    if(currentStepsExpId !== expId){ currentStepsExpId = expId; currentStepsDone = {}; }
+    panel.hidden = false;
+    var list = document.getElementById('stepsPanelList');
+    list.innerHTML = x.steps.map(function(s, i){
+      var done = !!currentStepsDone[i];
+      return '<div class="step-row'+(done?' done':'')+'" data-step-idx="'+i+'">'+
+        '<div class="tick"><svg><use href="#ic-check"/></svg></div>'+
+        '<span>'+s+'</span>'+
+      '</div>';
+    }).join('');
+    list.querySelectorAll('[data-step-idx]').forEach(function(row){
+      row.addEventListener('click', function(){ toggleStepDone(parseInt(row.getAttribute('data-step-idx'),10)); });
+    });
+    updateStepsProgress(x);
+  }
+  function toggleStepDone(idx){
+    currentStepsDone[idx] = !currentStepsDone[idx];
+    renderStepsPanel(currentStepsExpId);
+  }
+  function updateStepsProgress(x){
+    var total = x.steps.length;
+    var done = Object.keys(currentStepsDone).filter(function(k){ return currentStepsDone[k]; }).length;
+    var fill = document.getElementById('stepsProgFill');
+    var count = document.getElementById('stepsCount');
+    if(fill) fill.style.width = (total? Math.round(done/total*100):0)+'%';
+    if(count) count.textContent = done+'/'+total;
+  }
+
+  function updateHeroStats(){
+    document.getElementById('statCount').textContent = EXPERIMENTS.length;
+    document.getElementById('statDone').textContent = expDoneCount();
+    document.getElementById('statChem').textContent = CHEMICALS.length;
+    document.getElementById('statReactions').textContent = localReactionCount;
+  }
+
+  function startExperiment(expId){
+    var x = EXP_BY_ID[expId]; if(!x) return;
+    showView('sandbox');
+    // بدون تجهيز مسبق: تبقى المنضدة فارغة، وتسحب الطالبة نفسها الأدوات الزجاجية والمواد وفق خطوات التجربة.
+    var banner = document.getElementById('contextBanner');
+    var cat = CATS[x.cat];
+    banner.hidden = false;
+    banner.innerHTML =
+      '<div class="context-banner" style="--cb-color:'+cat.color+'">'+
+        '<div class="cb-decor"></div>'+
+        '<div class="cb-icon"><svg><use href="'+x.icon+'"/></svg></div>'+
+        '<div class="cb-text"><span class="cb-eyebrow">'+cat.label+' · التجربة الحالية</span><b>'+x.title+'</b><span class="cb-q">'+x.question+'</span></div>'+
+        '<button class="cb-close" id="cbClose" title="إغلاق"><svg><use href="#ic-x"/></svg></button>'+
+      '</div>';
+    document.getElementById('cbClose').addEventListener('click', function(){ banner.hidden = true; });
+    renderStepsPanel(x.id);
+  }
+
+  /* ================= views / nav ================= */
+  var views = { home: document.getElementById('view-home'), sandbox: document.getElementById('view-sandbox'), quiz: document.getElementById('view-quiz') };
+  var navButtons = document.querySelectorAll('nav.mainnav [data-nav]');
+  var viewHistory = [];
+  var backBtn = document.getElementById('backBtn');
+  function updateBackBtn(){ if(backBtn) backBtn.hidden = viewHistory.length===0; }
+  function showView(name, fromBack){
+    var current = Object.keys(views).filter(function(k){ return !views[k].hidden; })[0];
+    if(!fromBack && current && current!==name){ viewHistory.push(current); }
+    Object.keys(views).forEach(function(k){ views[k].hidden = (k!==name); });
+    navButtons.forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-nav')===name); });
+    window.scrollTo({top:0, behavior:'auto'});
+    if(name==='home'){ renderGallery(); updateHeroStats(); }
+    if(name==='quiz'){ renderQuizHub(); }
+    updateBackBtn();
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-nav]');
+    if(!t) return;
+    showView(t.getAttribute('data-nav'));
+  });
+  if(backBtn){
+    backBtn.addEventListener('click', function(){
+      if(!viewHistory.length) return;
+      showView(viewHistory.pop(), true);
+    });
+  }
+
+  /* ================= quiz hub rendering ================= */
+  function renderQuizHub(){
+    var list = document.getElementById('quizList'); list.innerHTML = '';
+    EXPERIMENTS.forEach(function(x){
+      var cat = CATS[x.cat];
+      var st = quizState[x.id] || {};
+      var item = document.createElement('div'); item.className = 'qa-item'; item.id = 'qa-'+x.id;
+      item.innerHTML =
+        '<div class="qa-head">'+
+          '<div class="icon" style="background:color-mix(in srgb, '+cat.color+' 18%, transparent); color:'+cat.color+'"><svg><use href="'+x.icon+'"/></svg></div>'+
+          '<div class="t"><b>'+x.title+'</b><span>'+cat.label+'</span></div>'+
+          '<div class="score">'+(st.score!==undefined? st.score+'/'+x.quiz.length : '0/'+x.quiz.length)+'</div>'+
+          '<svg class="chev" width="18" height="18"><use href="#ic-chev"/></svg>'+
+        '</div>'+
+        '<div class="qa-body"></div>';
+      item.querySelector('.qa-head').addEventListener('click', function(){
+        var wasOpen = item.classList.contains('open');
+        document.querySelectorAll('.qa-item.open').forEach(function(o){ o.classList.remove('open'); });
+        if(!wasOpen){ item.classList.add('open'); renderQuizBody(item, x); }
+      });
+      list.appendChild(item);
+    });
+    updateQuizRing();
+  }
+  function openQuizItem(expId){
+    var item = document.getElementById('qa-'+expId); if(!item) return;
+    document.querySelectorAll('.qa-item.open').forEach(function(o){ o.classList.remove('open'); });
+    item.classList.add('open');
+    renderQuizBody(item, EXP_BY_ID[expId]);
+    item.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+  function renderQuizBody(item, x){
+    var body = item.querySelector('.qa-body'); body.innerHTML = '';
+    var answers = new Array(x.quiz.length).fill(null);
+    var prevAnswers = (quizState[x.id] && quizState[x.id].answers) || null;
+    x.quiz.forEach(function(q, qi){
+      var card = document.createElement('div'); card.className='qcard';
+      var optsHtml = q.opts.map(function(o,oi){ return '<button class="opt" data-oi="'+oi+'"><span class="dot2"></span>'+o+'</button>'; }).join('');
+      card.innerHTML = '<div class="qtext">'+(qi+1)+'. '+q.q+'</div><div class="opts">'+optsHtml+'</div><div class="explain" hidden></div>';
+      body.appendChild(card);
+      var optEls = card.querySelectorAll('.opt');
+      function lockWith(oi){
+        answers[qi] = oi;
+        optEls.forEach(function(b,bi){ b.setAttribute('disabled',''); if(bi===q.correct) b.classList.add('correct'); else if(bi===oi) b.classList.add('wrong'); });
+        var ex = card.querySelector('.explain'); ex.hidden=false; ex.textContent=q.explain;
+        var score = answers.filter(function(a,i){return a===x.quiz[i].correct;}).length;
+        var answeredAll = answers.every(function(a){return a!==null;});
+        item.querySelector('.score').textContent = score+'/'+x.quiz.length;
+        quizState[x.id] = { score:score, done:answeredAll, answers:answers.slice() };
+        saveQuizState();
+        updateQuizRing();
+      }
+      optEls.forEach(function(btn){ btn.addEventListener('click', function(){ if(answers[qi]!==null) return; lockWith(parseInt(btn.getAttribute('data-oi'),10)); }); });
+      if(prevAnswers && prevAnswers[qi]!==null && prevAnswers[qi]!==undefined){ lockWith(prevAnswers[qi]); }
+    });
+  }
+  function updateQuizRing(){
+    var total = EXPERIMENTS.length, done = expDoneCount();
+    var circumference = 2*Math.PI*43;
+    var fg = document.getElementById('quizRingFg');
+    if(fg) fg.setAttribute('stroke-dasharray', (circumference*(done/total)).toFixed(1)+' '+circumference.toFixed(1));
+    var lbl = document.getElementById('quizRingLabel');
+    if(lbl) lbl.textContent = done+'/'+total;
+  }
+
+  /* ================= modals ================= */
+  function openModal(html){
+    var back = document.createElement('div'); back.className='modal-backdrop'; back.setAttribute('dir','rtl');
+    back.innerHTML = '<div class="modal">'+html+'<button class="icon-btn modal-close"><svg><use href="#ic-x"/></svg></button></div>';
+    document.body.appendChild(back);
+    back.addEventListener('click', function(ev){ if(ev.target===back) back.remove(); });
+    back.querySelector('.modal-close').addEventListener('click', function(){ back.remove(); });
+    function esc(ev){ if(ev.key==='Escape'){ back.remove(); document.removeEventListener('keydown', esc); } }
+    document.addEventListener('keydown', esc);
+  }
+  /* ---- interactive hero art: tilts toward the cursor, and drips an extra drop on click/tap ---- */
+  (function(){
+    var hero = document.querySelector('.hero');
+    var art = document.querySelector('.hero-lab-art');
+    if(!hero || !art) return;
+    hero.addEventListener('mousemove', function(ev){
+      var r = hero.getBoundingClientRect();
+      var px = (ev.clientX - r.left)/r.width - 0.5;
+      var py = (ev.clientY - r.top)/r.height - 0.5;
+      art.style.transform = 'translate3d('+(-px*12).toFixed(1)+'px,'+(-py*8).toFixed(1)+'px,0)';
+    });
+    hero.addEventListener('mouseleave', function(){ art.style.transform = ''; });
+    hero.addEventListener('click', function(ev){
+      if(ev.target.closest('.hero-actions')) return; // don't double up with the real button click
+      var svgns = 'http://www.w3.org/2000/svg';
+      var cx = (358 + Math.random()*14).toFixed(1); // extra bubble inside the flask's liquid
+      var bubble = document.createElementNS(svgns,'circle');
+      bubble.setAttribute('cx',cx); bubble.setAttribute('cy','196'); bubble.setAttribute('r','2.8'); bubble.setAttribute('fill','#8FE3FF');
+      var a1 = document.createElementNS(svgns,'animate');
+      a1.setAttribute('attributeName','cy'); a1.setAttribute('values','196;142'); a1.setAttribute('dur','1s'); a1.setAttribute('fill','freeze');
+      var a2 = document.createElementNS(svgns,'animate');
+      a2.setAttribute('attributeName','opacity'); a2.setAttribute('values','.9;.9;0'); a2.setAttribute('keyTimes','0;.7;1'); a2.setAttribute('dur','1s'); a2.setAttribute('fill','freeze');
+      bubble.appendChild(a1); bubble.appendChild(a2);
+      art.appendChild(bubble);
+      setTimeout(function(){ bubble.remove(); }, 1050);
+    });
+  })();
+  document.getElementById('openSafety').addEventListener('click', function(){
+    openModal('<h3>دليل السلامة العام</h3><p style="margin-block-end:6px">راجعيها دائماً مع معلمتك ومشرفة السلامة قبل أي تجربة حقيقية.</p><div class="safety-grid">'+
+      SAFETY_ITEMS.map(function(s){ return '<div class="safety"><svg><use href="'+s.icon+'"/></svg><div><b>'+s.t+'</b><p>'+s.d+'</p></div></div>'; }).join('')+
+      '</div>');
+  });
+  document.getElementById('openFeedback').addEventListener('click', function(){
+    var mail = 'amalsaferalshamrani@gmail.com';
+    openModal(
+      '<h3>آراؤكِ ومشاكل تقنية</h3>'+
+      '<p style="margin-block-end:12px">عندك ملاحظة على تجربة، اقتراح لتطوير المختبر، أو واجهتك مشكلة تقنية؟ اكتبيها هنا وأرسليها مباشرة لبريد الأستاذة أمل.</p>'+
+      '<div class="fb-email-row"><svg><use href="#ic-mail"/></svg><span id="fbEmailTxt">'+mail+'</span><button type="button" class="btn" id="fbCopyBtn">نسخ البريد</button></div>'+
+      '<textarea id="fbText" class="fb-textarea" rows="5" placeholder="اكتبي ملاحظتك أو صفي المشكلة التقنية هنا..."></textarea>'+
+      '<div class="fb-actions"><button type="button" class="btn primary" id="fbSendBtn"><svg><use href="#ic-mail"/></svg>إرسال عبر البريد</button></div>'+
+      '<p class="fb-note">سيتم فتح رسالة بريد جاهزة على جهازكِ لإرسالها — هذه الصفحة لا تخزّن ما تكتبينه.</p>'
+    );
+    var copyBtn = document.getElementById('fbCopyBtn');
+    if(copyBtn) copyBtn.addEventListener('click', function(){
+      function done(){ copyBtn.textContent = 'تم النسخ ✓'; setTimeout(function(){ copyBtn.textContent = 'نسخ البريد'; }, 1600); }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(mail).then(done, function(){});
+      }
+    });
+    var sendBtn = document.getElementById('fbSendBtn');
+    if(sendBtn) sendBtn.addEventListener('click', function(){
+      var txt = document.getElementById('fbText');
+      var body = txt ? txt.value.trim() : '';
+      var subject = encodeURIComponent('ملاحظات على مختبر آفاق');
+      var href = 'mailto:'+mail+'?subject='+subject+(body ? '&body='+encodeURIComponent(body) : '');
+      window.location.href = href;
+    });
+  });
+  document.getElementById('openGuide').addEventListener('click', function(){
+    openModal('<h3>دليل المواد الكيميائية</h3><p style="margin-block-end:10px">نبذة سريعة عن كل مادة على الرفّ.</p>'+
+      '<div style="display:flex;flex-direction:column;gap:10px">'+
+      CHEMICALS.map(function(c){ return '<div class="safety" style="background:var(--surface-2);border-color:var(--line)"><span class="swatch" style="width:26px;height:30px;flex:none">'+chemSwatch(c)+'</span><div><b>'+c.name+'</b><span class="f" style="color:var(--brand);font-weight:700;font-size:.76rem;display:block;margin-block-end:3px">'+c.formula+'</span><p>'+c.desc+'</p></div></div>'; }).join('')+
+      '</div>');
+  });
+
+  var courseSwitch = document.getElementById('courseSwitch');
+  var courseBtn = document.getElementById('courseBtn');
+  courseBtn.addEventListener('click', function(ev){
+    ev.stopPropagation();
+    var isOpen = courseSwitch.classList.toggle('open');
+    courseBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+  document.addEventListener('click', function(ev){
+    if(courseSwitch.classList.contains('open') && !ev.target.closest('#courseSwitch')){
+      courseSwitch.classList.remove('open');
+      courseBtn.setAttribute('aria-expanded','false');
+    }
+  });
+
+  /* boot */
+  renderFilters();
+  renderGallery();
+  updateHeroStats();
+  renderLog();
+})();
+</script>
